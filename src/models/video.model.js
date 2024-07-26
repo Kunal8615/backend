@@ -18,11 +18,7 @@ const videoschema = new Schema(
             type : String, 
             required : true
         },
-        duration : {
-            type : Number,
-            required : true
-        },
-
+        
         views :{
             type: Number,
             default : 0
@@ -34,10 +30,18 @@ const videoschema = new Schema(
         owner :{
             type : Schema.Types.ObjectId,
             ref :"User"
-        }
+        },
+        duration : {
+            type : Number,
+            required : true
+        },
     },
     {timestamps:true})
+    export const Video = mongoose.
+    model("Video",videoschema)
 
 
-videoschema.plugin(mongooseAggregatePaginate)
-export const Video = mongoose.model("Video",videoschema)
+
+
+
+    videoschema.plugin(mongooseAggregatePaginate)

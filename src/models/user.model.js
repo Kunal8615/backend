@@ -22,19 +22,19 @@ const userschema = new Schema({
     },
     watchHistory: [
         {
-            type: Schema.Types.ObjectId,
-            ref: "Video"
+        type: Schema.Types.ObjectId,
+        ref: "Video"
         }
     ],
+    avatar: {
+        type: String,
+        required: true
+    },
     fullname: {
         type: String,
         required: true,
         trim: true,
         index: true
-    },
-    avatar: {
-        type: String,
-        required: true
     },
     coverimage: {
         type: String
