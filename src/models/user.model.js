@@ -20,6 +20,12 @@ const userschema = new Schema({
         lowercase: true,
         trim: true
     },
+    watchHistory: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Video"
+        }
+    ],
     fullname: {
         type: String,
         required: true,
@@ -33,12 +39,6 @@ const userschema = new Schema({
     coverimage: {
         type: String
     },
-    watchHistory: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Video"
-        }
-    ],
     password: {
         type: String,
         required: [true, "Password is required"]

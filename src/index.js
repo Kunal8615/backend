@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { DB_NAME } from "./constants.js";
 import connectDB from "./database/index.js";
 import { app } from "./app.js";
-//2ND APROCH
+
 connectDB()
 .then(()=>{
   app.listen(process.env.PORT || 8000,()=>{
