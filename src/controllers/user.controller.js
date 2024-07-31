@@ -48,11 +48,9 @@ if(existuser){
 
    const avatar = await uploadonCloundinary(avatarlocalpath)
    const coverimage = await uploadonCloundinary(coverimagelocalpath)
-
    if(!avatar){
     throw new Apierror(400,"avtar need!")
    }
-
     const user = await User.create({
     fullname,
     avatar : avatar.url,
@@ -61,6 +59,7 @@ if(existuser){
     password,
     username : username.toLowercase()
    })
+
 //to remove
    const createduser = await user.findById(user._id).select(
     "-password -refreshToken"
