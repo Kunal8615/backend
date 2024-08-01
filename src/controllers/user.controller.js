@@ -7,9 +7,9 @@ import { Apiresponce } from "../utils/Apiresponce.js";
 
 
 const Registeruser = asynchandler(async(req,res) =>{
-//   res.status(500).json({
-//      message : "ok working"
-// })
+  res.status(500).json({
+    message : "ok working"
+})
 
 //Register user
 
