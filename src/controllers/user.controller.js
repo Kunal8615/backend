@@ -31,11 +31,11 @@ if([fullname,email,username,password].some((feild)=>feild?.trim==="")){
 }
 
 //user check
- const existuser = User.findOne({
+ const existuser = await User.findOne({
     $or:[{username},{email}]
 })
 if(existuser){
-    throw new Apierror(409," already exist")
+    throw new Apierror(409," user  already exist")
 }
 //by multer
  const avatarlocalpath = req.files?.avatar[0]?.path;
@@ -51,17 +51,20 @@ if(existuser){
    if(!avatar){
     throw new Apierror(400,"avtar need!")
    }
+
+   //create user
+
     const user = await User.create({
     fullname,
     avatar : avatar.url,
     coverimage : coverimage?.url || "",
     email,
     password,
-    username : username.toLowercase()
+    username : username.toLowerCase()
    })
 
-//to remove
-   const createduser = await user.findById(user._id).select(
+//check created user and remove password and refresh token
+   const createduser = await User.findById(user._id).select(
     "-password -refreshToken"
    )
    if(!createduser){
