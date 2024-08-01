@@ -39,7 +39,16 @@ if(existuser){
 }
 //by multer
  const avatarlocalpath = req.files?.avatar[0]?.path;
- const coverimagelocalpath = req.files?.coverimage[0]?.path;
+ //const coverimagelocalpath = req.files?.coverimage[0]?.path;
+
+let coverimagelocalpath;
+if(req.files && Array.isArray(req.files.coverimage) && req.files.coverimage.length>0){
+   coverimagelocalpath = req.files.coverimage[0].path
+}
+
+
+
+
  if(!avatarlocalpath){
     throw new Apierror(400,"avatar req")
 
@@ -70,6 +79,7 @@ if(existuser){
    if(!createduser){
     throw new Apierror (500,"wrong while register user")
    }
+   console.log(req.files);
 
    //responce
    return res.status(201).json(
