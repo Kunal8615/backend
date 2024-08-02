@@ -72,7 +72,7 @@ userschema.methods.generateAccessToken = async function() {
         username: this.username,
         fullname: this.fullname
     };
-    const token = await jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+    const token =  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
     return token;
 };
 
