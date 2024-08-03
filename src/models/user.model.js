@@ -22,8 +22,8 @@ const userschema = new Schema({
     },
     watchHistory: [
         {
-        type: Schema.Types.ObjectId,
-        ref: "Video"
+            type: Schema.Types.ObjectId,
+            ref: "Video"
         }
     ],
     avatar: {
@@ -72,7 +72,7 @@ userschema.methods.generateAccessToken = async function() {
         username: this.username,
         fullname: this.fullname
     };
-    const token =  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
     return token;
 };
 
@@ -80,9 +80,10 @@ userschema.methods.generateRefreshToken = async function() {
     const payload = {
         _id: this._id
     };
-    const token =  jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '10d' });
+    const token = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '10d' });
     return token;
 };
 
 // Exporting model
-export const User = mongoose.model("User", userschema);
+const User = mongoose.model("User", userschema);
+export default User; // Ensure this is a default export
