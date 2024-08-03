@@ -3,6 +3,7 @@ import { Apierror } from "../utils/Apierror.js";
 import User from "../models/user.model.js";
 import { uploadonCloundinary } from "../utils/cloudinary.js";
 import { Apiresponce } from "../utils/Apiresponce.js";
+import jwt, { decode } from "jsonwebtoken"
 
 const GenerateAccessAndRefreshTokens = async (userId) => {
     try {
@@ -78,8 +79,6 @@ const Registeruser = asynchandler(async (req, res) => {
 });
 
 
-
-
 // Login user
 const loginUser = asynchandler(async (req, res) => {
     const { email, username, password } = req.body;
@@ -131,4 +130,49 @@ const logoutUser = asynchandler(async (req, res) => {
         .json(new Apiresponce(200, {}, "User logged out"));
 });
 
-export { Registeruser, loginUser, logoutUser };
+//refreshAccessToken
+
+const refreshAccessToken = asynchandler(async(req,res)=>{
+    const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken
+
+    if(incomingRefreshToken){
+      throw new Apierror(401,"unautherized req")
+    }
+
+ try {
+    const decodedeToken=  jwt.verify(
+        incomingRefreshToken,
+        process.env.REFRESH_TOKEN_SECRET
+      )
+  
+      const user =  User.findById(decodedeToken?._id)
+  
+      if(!user){
+        throw new Apierror(401,"invalid refresh token")
+      }
+      if(incomingRefreshToken!==user?.refreshToken){
+        throw new Apierror(401," Refresh Token is Expired or Used")
+      }
+      const options = {
+        httpOnly : true,
+        secure : true
+      }
+  
+  
+      const {accessToken, newrefreshToken}=await GenerateAccessAndRefreshTokens(user._id)
+      return res
+      .status(200)
+      .cookie("accressToken",accessToken,options)
+      .cookie("refreshToken",refreshToken,options)
+      .json(
+        new Apiresponce(
+           200,
+           {accessToken,refreshToken : newrefreshToken}, "access token is refreshed"
+        )
+      )
+ } catch (error) {
+   throw new Apierror(401,error?.message || "invalid refresh token")
+ }
+})
+
+export { Registeruser, loginUser, logoutUser ,refreshAccessToken};
