@@ -117,62 +117,75 @@ const loginUser = asynchandler(async (req, res) => {
         .json(new Apiresponce(200, { user: loggedinUser, accessToken, refreshToken }, "User logged in successfully"));
 });
 
-const logoutUser = asynchandler(async (req, res) => {
-    await User.findByIdAndUpdate(req.user._id, { refreshToken: undefined }, { new: true });
 
-    const options = {
+const logoutUser = asynchandler(async (req, res) => {
+    try {
+      await User.findByIdAndUpdate(req.user._id, {
+        $unset: {
+          refreshToken: 1
+        }
+      }, {
+        new: true
+      });
+  
+      const options = {
         httpOnly: true,
         secure: true
-    };
-
-    return res.status(200)
+      };
+  
+      return res.status(200)
         .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
         .json(new Apiresponce(200, {}, "User logged out"));
-});
+    } catch (error) {
+      return res.status(500).json(new Apiresponce(500, {}, "An error occurred during logout"));
+    }
+  });
+  
 
 //refreshAccessToken
 
-const refreshAccessToken = asynchandler(async(req,res)=>{
+const refreshAccessToken = asynchandler(async (req, res) => {
     const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken
 
-    if(incomingRefreshToken){
-      throw new Apierror(401,"unautherized req")
+    if (!incomingRefreshToken) {
+        throw new Apierror(401, "unautherized req")
     }
 
- try {
-    const decodedeToken=  jwt.verify(
-        incomingRefreshToken,
-        process.env.REFRESH_TOKEN_SECRET
-      )
-  
-      const user =  User.findById(decodedeToken?._id)
-  
-      if(!user){
-        throw new Apierror(401,"invalid refresh token")
-      }
-      if(incomingRefreshToken!==user?.refreshToken){
-        throw new Apierror(401," Refresh Token is Expired or Used")
-      }
-      const options = {
-        httpOnly : true,
-        secure : true
-      }
-  
-  
-      const {accessToken, newrefreshToken}=await GenerateAccessAndRefreshTokens(user._id)
-      return res
-      .status(200)
-      .cookie("accressToken",accessToken,options)
-      .cookie("refreshToken",refreshToken,options)
-      .json(
-        new Apiresponce(
-           200,
-           {accessToken,refreshToken : newrefreshToken}, "access token is refreshed"
+    try {
+        const decodedeToken = jwt.verify(
+            incomingRefreshToken,
+            process.env.REFRESH_TOKEN_SECRET
         )
-      )
- } catch (error) {
-   throw new Apierror(401,error?.message || "invalid refresh token")
- }
+
+        const user = User.findById(decodedeToken?._id)
+
+        if (!user) {
+            throw new Apierror(401, "invalid refresh token")
+        }
+        if (incomingRefreshToken !== user?.refreshToken) {
+            throw new Apierror(401, " Refresh Token is Expired or Used")
+        }
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+
+
+        const { accessToken, newrefreshToken } = await GenerateAccessAndRefreshTokens(user._id)
+        return res
+            .status(200)
+            .cookie("accressToken", accessToken, options)
+            .cookie("refreshToken", newrefreshToken, options)
+            .json(
+                new Apiresponce(
+                    200,
+                    { accessToken, refreshToken: newrefreshToken }, "access token is refreshed"
+                )
+            )
+    } catch (error) {
+        throw new Apierror(401, "prolum" || "invalid refresh token")
+    }
 })
 
-export { Registeruser, loginUser, logoutUser ,refreshAccessToken};
+export { Registeruser, loginUser, logoutUser, refreshAccessToken };
