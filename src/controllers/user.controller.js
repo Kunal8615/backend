@@ -44,8 +44,9 @@ const Registeruser = asynchandler(async (req, res) => {
    const { fullname, email, username, password } = req.body
    console.log("email :", email);
    //check validation all
+
    if ([fullname, email, username, password].some((feild) => feild?.trim === "")) {
-      throw new Apierror(400, "all feild required")
+      throw new Apierror(400, "all field are required")
    }
 
    //user check
@@ -56,21 +57,18 @@ const Registeruser = asynchandler(async (req, res) => {
       throw new Apierror(409, " user  already exist")
    }
    //by multer
+   //let coverimagelocalpath;
+   //if (req.files && Array.isArray(req.files.coverimage) && req.files.coverimage.length > 0) {
+      //   coverimagelocalpath = req.files.coverimage[0].path
+      //  }
+      
+   const coverimagelocalpath = req.files?.coverimage[0]?.path;
    const avatarlocalpath = req.files?.avatar[0]?.path;
-   //const coverimagelocalpath = req.files?.coverimage[0]?.path;
-
-   let coverimagelocalpath;
-   if (req.files && Array.isArray(req.files.coverimage) && req.files.coverimage.length > 0) {
-      coverimagelocalpath = req.files.coverimage[0].path
-   }
-
-
-
 
    if (!avatarlocalpath) {
       throw new Apierror(400, "avatar req")
-
    }
+
    //cloudnary upload
 
    const avatar = await uploadonCloundinary(avatarlocalpath)
@@ -91,18 +89,20 @@ const Registeruser = asynchandler(async (req, res) => {
    })
 
    //check created user and remove password and refresh token
+
    const createduser = await User.findById(user._id).select(
-      "-password -refreshToken"
-   )
+      "-password -refreshToken")
+
    if (!createduser) {
       throw new Apierror(500, "wrong while register user")
    }
    console.log(req.files);
 
    //responce
+
    return res.status(201).json(
-      new Apiresponce(200, createduser, "user registered succesfully")
-   )
+      new Apiresponce(200, createduser, 
+         "user registered succesfully") )
 
 })
 
