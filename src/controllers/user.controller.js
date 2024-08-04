@@ -8,8 +8,8 @@ import jwt, { decode } from "jsonwebtoken"
 const GenerateAccessAndRefreshTokens = async (userId) => {
     try {
         const user = await User.findById(userId);
-        const accessToken = user.generateAccessToken();
-        const refreshToken = user.generateRefreshToken();
+        const accessToken = await user.generateAccessToken();
+        const refreshToken = await user.generateRefreshToken();
 
         // Save refresh token in database
         user.refreshToken = refreshToken;
@@ -102,7 +102,7 @@ const loginUser = asynchandler(async (req, res) => {
     }
 
     const { accessToken, refreshToken } = await GenerateAccessAndRefreshTokens(user._id);
-
+    console.log(accessToken,refreshToken);
     const loggedinUser = await User.findById(user._id).select("-password -refreshToken");
 
     const options = {
@@ -110,6 +110,7 @@ const loginUser = asynchandler(async (req, res) => {
         secure: true
     };
 
+    console.log("succedfully login done");
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)
