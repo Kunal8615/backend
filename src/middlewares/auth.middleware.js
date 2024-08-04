@@ -9,12 +9,12 @@ const verifyJWT = asynchandler(async (req, _, next) => {
 
     try {
         // Token ko cookies ya headers se extract karna
-        console.log(req.cookies);
-        console.log(req.body);
+     //   console.log(req.cookies);
+     //   console.log(req.body);
         token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
 
         // Token extraction ko check karne ke liye logging
-        console.log("Extracted Token:", token);
+        //console.log("Extracted Token:", token);
 
         // Agar token nahi mila, toh error throw karo
         if (!token) {
@@ -30,7 +30,7 @@ const verifyJWT = asynchandler(async (req, _, next) => {
         decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
         // Decoded token ko logging karna
-        console.log("Decoded Token:", decodedToken);
+     //   console.log("Decoded Token:", decodedToken);
 
         // User ko database se fetch karna
         const user = await User.findById(decodedToken?._id).select("-password -refreshToken");

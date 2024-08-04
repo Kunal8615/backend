@@ -102,7 +102,7 @@ const loginUser = asynchandler(async (req, res) => {
     }
 
     const { accessToken, refreshToken } = await GenerateAccessAndRefreshTokens(user._id);
-    console.log(accessToken,refreshToken);
+  //  console.log(accessToken,refreshToken);
     const loggedinUser = await User.findById(user._id).select("-password -refreshToken");
 
     const options = {
@@ -133,7 +133,7 @@ const logoutUser = asynchandler(async (req, res) => {
         httpOnly: true,
         secure: true
       };
-  
+  console.log("user logout done");
       return res.status(200)
         .clearCookie("accessToken", options)
         .clearCookie("refreshToken", options)
