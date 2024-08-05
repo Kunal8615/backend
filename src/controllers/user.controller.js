@@ -297,4 +297,4 @@ const updateUserCoverimage = asynchandler(async(req,res)=>{
     )
 })
 export { Registeruser, loginUser, logoutUser, refreshAccessToken ,changeCurrentPassword
-    ,getCurrentUser,updateUserAvatar,updateUserCoverimage};
+    ,getCurrentUser,updateUserAvatar,updateUserCoverimage,updateAccountDetail};
