@@ -212,7 +212,7 @@ const getCurrentUser = asynchandler(async(req,res)=>{
     .json(200,req.user,"current user fetched successfully")
 })
 
-
+//
 //update detail
 const updateAccountDetail = asynchandler(async(req,res)=>{
 
