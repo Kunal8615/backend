@@ -268,6 +268,7 @@ const updateUserAvatar = asynchandler(async(req,res)=>{
 
 
 const updateUserCoverimage = asynchandler(async(req,res)=>{
+
     const coverLocalPath = req.file?.path
 
     if(!coverLocalPath){
@@ -294,6 +295,79 @@ const updateUserCoverimage = asynchandler(async(req,res)=>{
     .status(200)
     .json(
         new Apiresponce(200,user , "cover image upload successfully ")
+    )
+})
+
+const getUserChannelProfile = asynchandler(async(req,res)=>{
+    const {username} = req.params
+
+    if(!username?.trim()){
+        throw new Apierror(400,"not found user")
+    }
+
+     const channel = await User.aggregate([
+        {
+            $match : {
+                username : username?.toLowerCase()
+            }
+        },
+        {
+            $lookup : {
+                from : "Subscription",
+                localField : "_id",
+                foreignField : "channel",
+                as : "subscribers"
+            }
+        },
+        {
+            $lookup : {
+                from : "Subscription",
+                localField : "_id",
+                foreignField : "subscriber", // mene subscribe kiye hui hai
+                as : "subscriberTo"
+            }
+        },
+        {
+            $addFields : {
+                subscriberCount : {
+                    $size : "$subscribers"
+                },
+                channelSubscribeToCount : {
+                    $size : "subscriberTo"
+                },
+                isSubscribed : {
+                    $condition : {
+                        if: {$in : [req.user?._id, "$subscribers.subscriber"]},
+                        then : true,
+                        else : false
+
+                    }
+                }
+            }
+        },
+        { //seleced dispaly
+            $project : {
+                fullname : 1,
+                username : 1,
+                subscriberCount : 1,
+                isSubscribed : 1,
+                channelSubscribeToCount : 1,
+                avatar : 1,
+                coverimage : 1,
+                email : 1
+
+            }
+        }
+    ])
+
+    if (!channel?.length){
+        throw new Apierror(400,"channel not found");
+    }
+
+    return res
+    .status(200)
+    .json(
+        new Apiresponce(200," data channel fetched succefully ")
     )
 })
 export { Registeruser, loginUser, logoutUser, refreshAccessToken ,changeCurrentPassword
