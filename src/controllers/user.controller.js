@@ -414,7 +414,13 @@ const getWatchHistory = asynchandler(async(req,res)=>{
             }
         }
     ])
+
+    return res
+    .status(200)
+    .json(
+        new Apiresponce(200,user[0].watchHistory, "watched history fetched successfully")
+    )
 })
 
 export { Registeruser, loginUser, logoutUser, refreshAccessToken ,changeCurrentPassword
-    ,getCurrentUser,updateUserAvatar,updateUserCoverimage,updateAccountDetail};
+    ,getCurrentUser,updateUserAvatar,updateUserCoverimage,updateAccountDetail,getWatchHistory ,getUserChannelProfile};
