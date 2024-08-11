@@ -75,7 +75,6 @@ userschema.methods.generateAccessToken = async function() {
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
     return token;
 };
-
 userschema.methods.generateRefreshToken = async function() {
     const payload = {
         _id: this._id
