@@ -4,6 +4,7 @@ import User from "../models/user.model.js";
 import { uploadonCloundinary } from "../utils/cloudinary.js";
 import { Apiresponce } from "../utils/Apiresponce.js";
 import jwt, { decode } from "jsonwebtoken"
+import mongoose, { mongo } from "mongoose";
 
 const GenerateAccessAndRefreshTokens = async (userId) => {
     try {
@@ -370,5 +371,44 @@ const getUserChannelProfile = asynchandler(async(req,res)=>{
         new Apiresponce(200," data channel fetched succefully ")
     )
 })
+
+const getWatchHistory = asynchandler(async(req,res)=>{
+    const user = await User.aggregate([
+        {
+            $match : {
+                _id : new mongoose.Types.ObjectId(req.user._id)
+            }
+            
+        },
+        {
+            $lookup : {
+                from : "Videos",
+                localField : "watchHistory",
+                foreignField : "_id",
+                as : "watchHistory",
+                pipeline : [
+                    {
+                        $lookup : {
+                            from : "users",
+                            localField : "owner",
+                            foreignField : "_id",
+                            as : "owner",
+                            pipeline : [
+                                {
+                                    $project : {
+                                        fullname :1,
+                                        username : 1,
+                                        avatar : 1
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ])
+})
+
 export { Registeruser, loginUser, logoutUser, refreshAccessToken ,changeCurrentPassword
     ,getCurrentUser,updateUserAvatar,updateUserCoverimage,updateAccountDetail};
