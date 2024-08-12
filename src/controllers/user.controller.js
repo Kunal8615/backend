@@ -208,9 +208,39 @@ const changeCurrentPassword = asynchandler(async(req,res)=>{
        .json(new Apiresponce(200,{},"passsword changed succefullly"))
 })
 
+const chnageUserName = asynchandler(async (req, res) => {
+    const { newusername, password } = req.body;
+    console.log("user fetched");
+    // Check if newusername and password are provided
+    if (!newusername || !password) {
+        throw new Apierror(400, "New username and password are required");
+    }
+
+    // Find user by ID from the request
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        throw new Apierror(404, "User not found");
+    }
+    console.log("user fetched");
+    // Check if the provided password is correct
+    const isPasswordCorrect = await user.isPasswordCorrect(password);
+    if (!isPasswordCorrect) {
+        throw new Apierror(400, "Invalid password");
+    }
+    console.log("password checked");
+    // Update username and save user
+    user.username = newusername;
+    await user.save({ validateBeforeSave: false });
+    console.log("username updated");
+    // Send success response
+    return res.status(200)
+        .json(new Apiresponce(200, {}, "Username changed successfully"));
+});
+
+
 const getCurrentUser = asynchandler(async(req,res)=>{
     return res.status(200)
-    .json(200,req.user,"current user fetched successfully")
+    .json(new Apiresponce(200,res.user,"user current user"))
 })
 
 //
@@ -299,78 +329,75 @@ const updateUserCoverimage = asynchandler(async(req,res)=>{
     )
 })
 
-const getUserChannelProfile = asynchandler(async(req,res)=>{
-    const {username} = req.params
+const getUserChannelProfile = asynchandler(async (req, res) => {
+    const { username } = req.params;
 
-    if(!username?.trim()){
-        throw new Apierror(400,"not found user")
+    if (!username?.trim()) {
+        throw new Apierror(400, "User not found");
     }
 
-     const channel = await User.aggregate([
+    const channel = await User.aggregate([
         {
-            $match : {
-                username : username?.toLowerCase()
+            $match: {
+                username: username?.toLowerCase()
             }
         },
         {
-            $lookup : {
-                from : "Subscription",
-                localField : "_id",
-                foreignField : "channel",
-                as : "subscribers"
+            $lookup: {
+                from: "Subscription",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers"
             }
         },
         {
-            $lookup : {
-                from : "Subscription",
-                localField : "_id",
-                foreignField : "subscriber", // mene subscribe kiye hui hai
-                as : "subscriberTo"
+            $lookup: {
+                from: "Subscription",
+                localField: "_id",
+                foreignField: "subscriber",
+                as: "subscriberTo"
             }
         },
         {
-            $addFields : {
-                subscriberCount : {
-                    $size : "$subscribers"
+            $addFields: {
+                subscriberCount: {
+                    $size: "$subscribers"
                 },
-                channelSubscribeToCount : {
-                    $size : "subscriberTo"
+                channelSubscribeToCount: {
+                    $size: "$subscriberTo"
                 },
-                isSubscribed : {
-                    $condition : {
-                        if: {$in : [req.user?._id, "$subscribers.subscriber"]},
-                        then : true,
-                        else : false
-
+                isSubscribed: {
+                    $cond: {
+                        if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+                        then: true,
+                        else: false
                     }
                 }
             }
         },
-        { //seleced dispaly
-            $project : {
-                fullname : 1,
-                username : 1,
-                subscriberCount : 1,
-                isSubscribed : 1,
-                channelSubscribeToCount : 1,
-                avatar : 1,
-                coverimage : 1,
-                email : 1
-
+        {
+            $project: {
+                fullname: 1,
+                username: 1,
+                subscriberCount: 1,
+                isSubscribed: 1,
+                channelSubscribeToCount: 1,
+                avatar: 1,
+                coverimage: 1,
+                email: 1
             }
         }
-    ])
+    ]);
 
-    if (!channel?.length){
-        throw new Apierror(400,"channel not found");
+    if (!channel?.length) {
+        throw new Apierror(400, "Channel not found");
     }
 
     return res
-    .status(200)
-    .json(
-        new Apiresponce(200," data channel fetched succefully ")
-    )
-})
+        .status(200)
+        .json(new Apiresponce(200, channel, "Data channel fetched successfully"));
+});
+
 
 const getWatchHistory = asynchandler(async(req,res)=>{
     const user = await User.aggregate([
@@ -423,4 +450,4 @@ const getWatchHistory = asynchandler(async(req,res)=>{
 })
 
 export { Registeruser, loginUser, logoutUser, refreshAccessToken ,changeCurrentPassword
-    ,getCurrentUser,updateUserAvatar,updateUserCoverimage,updateAccountDetail,getWatchHistory ,getUserChannelProfile};
+    ,getCurrentUser,updateUserAvatar,updateUserCoverimage,chnageUserName, updateAccountDetail,getWatchHistory ,getUserChannelProfile};
