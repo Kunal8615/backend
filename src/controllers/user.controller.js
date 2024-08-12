@@ -104,7 +104,7 @@ const loginUser = asynchandler(async (req, res) => {
 
     const { accessToken, refreshToken } = await GenerateAccessAndRefreshTokens(user._id);
   //  console.log(accessToken,refreshToken);
-    const loggedinUser = await User.findById(user._id).select("-password -refreshToken");
+    const   loggedinUser = await User.findById(user._id).select("-password -refreshToken");
 
     const options = {
         httpOnly: true,
@@ -208,8 +208,8 @@ const changeCurrentPassword = asynchandler(async(req,res)=>{
        .json(new Apiresponce(200,{},"passsword changed succefullly"))
 })
 
-const chnageUserName = asynchandler(async (req, res) => {
-    const { newusername, password } = req.body;
+const changeUserName = asynchandler(async (req, res) => {
+    const { newusername, password } = req.body
     console.log("user fetched");
     // Check if newusername and password are provided
     if (!newusername || !password) {
@@ -450,4 +450,4 @@ const getWatchHistory = asynchandler(async(req,res)=>{
 })
 
 export { Registeruser, loginUser, logoutUser, refreshAccessToken ,changeCurrentPassword
-    ,getCurrentUser,updateUserAvatar,updateUserCoverimage,chnageUserName, updateAccountDetail,getWatchHistory ,getUserChannelProfile};
+    ,getCurrentUser,updateUserAvatar,updateUserCoverimage,changeUserName, updateAccountDetail,getWatchHistory ,getUserChannelProfile};
