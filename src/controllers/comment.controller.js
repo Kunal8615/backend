@@ -1,31 +1,107 @@
-import mongoose from "mongoose"
-import {Comment} from "../models/comment.model.js"
-import {ApiError} from "../utils/ApiError.js"
-import {ApiResponse} from "../utils/ApiResponse.js"
-import {asyncHandler} from "../utils/asyncHandler.js"
+import mongoose, { isValidObjectId } from "mongoose"
+import { Comment } from "../models/comment.model.js"
+import { Apierror } from "../utils/Apierror.js"
+import { ApiResponse } from "../utils/ApiResponse.js"
+import Video from "../models/video.model.js"
+import { asyncHandler } from "../utils/asyncHandler.js"
+import { Apiresponce } from "../utils/Apiresponce.js"
 
 const getVideoComments = asyncHandler(async (req, res) => {
-    //TODO: get all comments for a video
-    const {videoId} = req.params
-    const {page = 1, limit = 10} = req.query
+    const { videoId } = req.params
+    const { page = 1, limit = 10 } = req.query
+    if(!isValidObjectId(videoId)){
+        throw new Apierror(400,"Invalid video id")
+    }
+    const allcommentsinvideo=await Comment.aggregate([
+        {
+          $match:{
+            video:new mongoose.Types.ObjectId(videoId)
+          }
+        },
+        {
+            $lookup:{
+                from:""
+            }
+        }
+])
+
+
 
 })
 
 const addComment = asyncHandler(async (req, res) => {
-    // TODO: add a comment to a video
+    const { videoId } = req.params
+    const { content } = req.body
+    const video = await Video.findById(videoId)
+    if (!video) {
+        throw new Apierror(400, "Video not found")
+    }
+    const comment = await Comment.create({
+        content: content,
+        video: videoId,
+        owner: req.user?._id
+    })
+    if (!comment) {
+        throw new Apierror(404, "Couldnt comment")
+    }
+    return res.status(200)
+        .json(new Apisuccess(200, comment, "Commented Successfully"))
 })
 
 const updateComment = asyncHandler(async (req, res) => {
-    // TODO: update a comment
+    const { commentid } = req.params;
+    const { content } = req.body;
+    if (!content || content.trim().length === 0) {
+        throw new Apierror(400, "Content cannot be empty")
+    }
+    const verifycomment = await Comment.findById(commentid)
+    if (!verifycomment) {
+        throw new Apierror(400, " not exist comment")
+    }
+    if (verifycomment?.owner.toString() !== req.user?._id.toString()) {
+        throw new Apierror(400, "Only valid user can update comment")
+    }
+
+    const comment = await Comment.findByIdAndUpdate(commentid, {
+
+        $set: {
+            content: content
+        }
+    },
+        { new: true }
+
+    )
+    if (!comment) {
+        throw new Apierror(404, "Couldnt update the comment")
+    }
+    return res.status(200)
+        .json(new Apisuccess(200, "Comment updated successfully", comment))
 })
 
 const deleteComment = asyncHandler(async (req, res) => {
-    // TODO: delete a comment
+    const { commentid } = req.params;
+    const comment = await findById(commentid);
+    if (!comment) {
+        throw new Apierror(402, "Couldnt find the comment")
+    }
+    if (comment.owner?.toString() !== req.user?._id.toString()) {
+        throw new Apierror(400, "Only the owner can delete comment")
+    }
+    const newcomment = await Comment.findByIdAndDelete(commentid)
+    if (!newcomment) {
+        throw new Apierror(500, "Couldnt delete the comment")
+    }
+    return res.status(200)
+        .json(new Apiresponce(200, newcomment, "Comment deleted successfully"))
+
+
+
+
 })
 
 export {
-    getVideoComments, 
-    addComment, 
+    getVideoComments,
+    addComment,
     updateComment,
-     deleteComment
-    }
+    deleteComment
+}

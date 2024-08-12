@@ -22,4 +22,8 @@ app.use(cookieParser())
 import userrouter from "./routes/user.route.js"
 //ROUTERS DECLEATION by middleware
 app.use("/api/v1/users",userrouter)
+
+import commentroute from "../src/routes/comment.route.js"
+
+app.use("/api/v1/comment",commentroute)
 export {app}
