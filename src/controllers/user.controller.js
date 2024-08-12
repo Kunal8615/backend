@@ -231,7 +231,7 @@ const changeUserName = asynchandler(async (req, res) => {
     // Update username and save user
     user.username = newusername;
     await user.save({ validateBeforeSave: false });
-    console.log("username updated");
+    console.log("username updated"); 
     // Send success response
     return res.status(200)
         .json(new Apiresponce(200, res.user, "Username changed successfully"));
