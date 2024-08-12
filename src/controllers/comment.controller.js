@@ -1,12 +1,14 @@
 import mongoose, { isValidObjectId } from "mongoose"
 import { Comment } from "../models/comment.model.js"
 import { Apierror } from "../utils/Apierror.js"
-import { ApiResponse } from "../utils/ApiResponse.js"
-import Video from "../models/video.model.js"
-import { asyncHandler } from "../utils/asyncHandler.js"
-import { Apiresponce } from "../utils/Apiresponce.js"
+import { Apiresponce } from "../utils/Apiresponce.js";
+import {Video }from "../models/video.model.js"
+import jwt, { decode } from "jsonwebtoken"
+import { asynchandler } from "../utils/Asynchander.js";
 
-const getVideoComments = asyncHandler(async (req, res) => {
+
+
+const getVideoComments = asynchandler(async (req, res) => {
     const { videoId } = req.params
     const { page = 1, limit = 10 } = req.query
     if(!isValidObjectId(videoId)){
@@ -29,7 +31,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
 
 })
 
-const addComment = asyncHandler(async (req, res) => {
+const addComment = asynchandler(async (req, res) => {
     const { videoId } = req.params
     const { content } = req.body
     const video = await Video.findById(videoId)
@@ -48,7 +50,7 @@ const addComment = asyncHandler(async (req, res) => {
         .json(new Apisuccess(200, comment, "Commented Successfully"))
 })
 
-const updateComment = asyncHandler(async (req, res) => {
+const updateComment = asynchandler(async (req, res) => {
     const { commentid } = req.params;
     const { content } = req.body;
     if (!content || content.trim().length === 0) {
@@ -78,7 +80,7 @@ const updateComment = asyncHandler(async (req, res) => {
         .json(new Apisuccess(200, "Comment updated successfully", comment))
 })
 
-const deleteComment = asyncHandler(async (req, res) => {
+const deleteComment = asynchandler(async (req, res) => {
     const { commentid } = req.params;
     const comment = await findById(commentid);
     if (!comment) {
