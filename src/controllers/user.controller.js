@@ -234,7 +234,7 @@ const changeUserName = asynchandler(async (req, res) => {
     console.log("username updated");
     // Send success response
     return res.status(200)
-        .json(new Apiresponce(200, {}, "Username changed successfully"));
+        .json(new Apiresponce(200, res.user, "Username changed successfully"));
 });
 
 
