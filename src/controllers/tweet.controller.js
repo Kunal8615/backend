@@ -29,15 +29,63 @@ const createTweet = asynchandler(async (req, res) => {
 })
 
 const getUserTweets = asynchandler(async (req, res) => {
-    // TODO: get user tweets
+   
 })
 
 const updateTweet = asynchandler(async (req, res) => {
-    //TODO: update tweet
+   const {tweetid} = req.params
+   const {content} = req.body
+
+   if(!mongoose.isValidObjectId(tweetid)){
+    throw new Apierror(400, "Invalid tweet ID");
+   }
+
+   if(!content && content.trim().length===0){
+    throw new Apierror(400,"Content field is empty")
+}
+const newtweet = await Tweet.findById(tweetid)
+if (!newtweet) {
+    throw new Apierror(404, "Tweet not found");
+}
+
+if (newtweet?.owner.toString() !== req.user?._id.toString()) {
+    throw new Apierror(400, "only owner can edit thier tweet");
+}
+const tweet=await Tweet.findByIdAndUpdate(
+    tweetid,
+    {
+        $set:{
+            content:content
+        }
+    },{new:true}
+)
+
+if(!tweet){
+    throw new Apierror(500,"Try again later")
+}
+return res.status(200)
+.json(new Apisuccess(200,"Tweet updated successfully",tweet))
 })
 
 const deleteTweet = asynchandler(async (req, res) => {
-    //TODO: delete tweet
+    const {tweetid} = req.params
+    if(!mongoose.isValidObjectId(tweetid)){
+        throw new Apierror(400, "Invalid tweet ID");
+    }
+    const tweet = await Tweet.findById(tweetid);
+    if (!tweet) {
+        throw new Apierror(404, "Tweet not found");
+    }
+    if (tweet?.owner.toString() !== req.user?._id.toString()) {
+        throw new Apierror(400, "only owner can edit thier tweet");
+    }
+    await Tweet.findByIdAndDelete(tweetid)
+
+    if(!tweet){
+        throw new Apierror(500,"Try again later")
+    }
+    return res.status(200)
+    .json(new Apisuccess(200,"Tweet deleted successfully",{}))
 })
 
 export {
