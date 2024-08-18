@@ -103,13 +103,14 @@ const loginUser = asynchandler(async (req, res) => {
         httpOnly: true,
         secure: true
     };
-    console.log("succedfully login done");
+    console.log("login done");
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
-        .json(new Apiresponce(200, { user: loggedinUser, accessToken, refreshToken }, "User logged in successfully"));
-});
+        .json(new Apiresponce(200, { user: loggedinUser, accessToken, refreshToken },
+             "User logged in successfully"));
+    });
 
 
 const logoutUser = asynchandler(async (req, res) => {
