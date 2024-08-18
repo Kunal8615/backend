@@ -83,34 +83,26 @@ const Registeruser = asynchandler(async (req, res) => {
 // Login user
 const loginUser = asynchandler(async (req, res) => {
     const { email, username, password } = req.body;
-
     if (!username && !email) {
         throw new Apierror(400, "Username or email is required");
     }
-
     const user = await User.findOne({
         $or: [{ username }, { email }]
     });
-
     if (!user) {
         throw new Apierror(404, "User does not exist");
     }
-
     const isPasswordValid = await user.isPasswordCorrect(password);
-
     if (!isPasswordValid) {
         throw new Apierror(401, "Invalid user credentials");
     }
-
     const { accessToken, refreshToken } = await GenerateAccessAndRefreshTokens(user._id);
   //  console.log(accessToken,refreshToken);
     const   loggedinUser = await User.findById(user._id).select("-password -refreshToken");
-
     const options = {
         httpOnly: true,
         secure: true
     };
-
     console.log("succedfully login done");
     return res
         .status(200)
