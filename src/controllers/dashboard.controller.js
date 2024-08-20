@@ -100,7 +100,59 @@ return res
 })
 
 const getChannelVideos = asynchandler(async (req, res) => {
-    // TODO: Get all the videos uploaded by the channel
+    const {channelid} = req.params
+    if(!channelid || mongoose.isValidObjectId(channelid)){
+        throw new ApiError(401 , "Invalid user Id")
+    }
+
+    const channelvideos = await User.aggregate([
+        {
+             $match:{
+                _id : new mongoose.Types.ObjectId(channelid)
+             }
+        },
+
+        {
+            $lookup : {
+                from : "videos",
+                localField : "_id",
+                foreignField: "owner",
+                as : "video"
+            }
+        },
+        {
+            $project : {
+                video : 1,
+                _id : 0
+            }
+        },
+        {
+            $unwind : "$video"
+        }
+    ])
+
+    if (!channelvideos) {
+        return res
+        .status(200)
+        .json(
+            new Apiresponce(
+                200 ,
+                {},
+                "User does't uploaded any videos"
+            )
+        )
+    }
+
+    return res
+    .status(200)
+    .json(
+        new Apiresponce(
+            200,
+            channelvideos,
+            "User videos fetched"
+        )
+    )
+
 })
 
 export {
