@@ -30,7 +30,7 @@ router.route("/update-details").patch(verifyJWT) //update selected by patch
 router.route("/avatar").patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
 
 router.route("/cover-image").patch(verifyJWT, upload.single("coverImage"), updateUserCoverimage);
-router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
+router.route("/com/:username").get(verifyJWT, getUserChannelProfile);
 router.route("/history").get(verifyJWT, getWatchHistory);
 export default router;
 
