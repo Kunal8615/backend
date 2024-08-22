@@ -161,12 +161,12 @@ const updateVideo = asynchandler(async (req, res) => {
 
 })
 
-const deleteVideo = asyncHandler(async (req, res) => {
+const deleteVideo = asynchandler(async (req, res) => {
     const { videoId } = req.params
     //TODO: delete video
 })
 
-const togglePublishStatus = asyncHandler(async (req, res) => {
+const togglePublishStatus = asynchandler(async (req, res) => {
     const { videoId } = req.params
 })
 
