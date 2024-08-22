@@ -98,11 +98,13 @@ const deleteTweet = asynchandler(async (req, res) => {
     if (tweet?.owner.toString() !== req.user?._id.toString()) {
         throw new Apierror(400, "only owner can edit thier tweet");
     }
-    await Tweet.findByIdAndDelete(tweetid)
-
+    
     if(!tweet){
         throw new Apierror(500,"Try again later")
     }
+    
+    await Tweet.findByIdAndDelete(tweetid)
+
     return res.status(200)
     .json(new Apisuccess(200,"Tweet deleted successfully",{}))
 })
