@@ -59,38 +59,38 @@ const getAllVideos = asynchandler(async (req, res) => {
         });
     }
 
-    const paginate = (page , limit , videos) => {
+    const paginate = (page, limit, videos) => {
         const startingIndex = (page - 1) * limit
         const endIndex = page * limit
-        return filteredVideos.slice(startingIndex , endIndex)
+        return filteredVideos.slice(startingIndex, endIndex)
     }
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(
-            200,
-            paginate(page , limit , videos),
-            "Video fetched successfully"
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                paginate(page, limit, videos),
+                "Video fetched successfully"
+            )
         )
-    )
 
 })
 
 const publishAVideo = asynchandler(async (req, res) => {
     const { title, description } = req.body
-    if(!title && !description){
-        throw Apierror(402," title and description required ")
+    if (!title && !description) {
+        throw Apierror(402, " title and description required ")
     }
     const videoLocalPath = req.files?.videofile[0]?.path
     const thumbnailLocalPath = req.files?.thumbnail[0]?.path
 
     if (!videoLocalPath) {
-        throw new Apierror(400 , "video must be required")
+        throw new Apierror(400, "video must be required")
     }
 
     if (!thumbnailLocalPath) {
-        throw new Apierror(400 , "thumbnail must be required")
+        throw new Apierror(400, "thumbnail must be required")
     }
 
     ///upload on cloudnairy
@@ -98,60 +98,60 @@ const publishAVideo = asynchandler(async (req, res) => {
     const videoUpload = await uploadOnCloudinary(videoLocalPath) //return url
     const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
 
-    
+
     if (!uploadedVideo) {
-        throw new Apierror(500 , "something went wrong while uploading the video on cloudinary")
+        throw new Apierror(500, "something went wrong while uploading the video on cloudinary")
     }
 
     if (!uploadedThumbnail) {
-        throw new Apierror(500 , "something went wrong while uploading thumbnail on cloudinary")
+        throw new Apierror(500, "something went wrong while uploading thumbnail on cloudinary")
     }
 
     const user = await User.findById(req.user?._id)
-    if(!user){
-        throw Apierror(400," user not found")
+    if (!user) {
+        throw Apierror(400, " user not found")
     }
 
     const video = await Video.create({
-        videofile : uploadedVideo.url,
-        thumbnail : uploadedThumbnail.url,
-        title : title,
-        description : description,
-        duration : videoUpload.duration,
-        views : 0,
-        ispublished:true,
-        owner : req.user?._id
+        videofile: uploadedVideo.url,
+        thumbnail: uploadedThumbnail.url,
+        title: title,
+        description: description,
+        duration: videoUpload.duration,
+        views: 0,
+        ispublished: true,
+        owner: req.user?._id
     });
-    if(!video){
-        throw Apierror(500,"try again later")
+    if (!video) {
+        throw Apierror(500, "try again later")
     }
     const videoData = await Video.findById(video._id)
     if (!videoData) {
-        throw new Apierror(410 , "video data not found")
+        throw new Apierror(410, "video data not found")
     }
 
-    
+
     return res.status(200).
-    json(new ApiResponse(200,videoData,"video is publish"))
+        json(new ApiResponse(200, videoData, "video is publish"))
 })
 
 const getVideoById = asynchandler(async (req, res) => {
     const { videoId } = req.params
-    if(!videoId && isValidObjectId(videoId)){
-        throw Apierror(401,"videoid is in valid")
+    if (!videoId && isValidObjectId(videoId)) {
+        throw Apierror(401, "videoid is in valid")
     }
 
     const video = await Video.findById(videoId)
-    if(!video){
-        throw new Apierror(401,"video not found")
+    if (!video) {
+        throw new Apierror(401, "video not found")
     }
 
-    if(video){
-        video.views = video.views+1
-        await video.save({validateBeforeSave : true})
+    if (video) {
+        video.views = video.views + 1
+        await video.save({ validateBeforeSave: true })
     }
 
-    return res.status(200).json(new ApiResponse(200, video," video fetched succedfully"))
+    return res.status(200).json(new ApiResponse(200, video, " video fetched succedfully"))
 
 })
 
