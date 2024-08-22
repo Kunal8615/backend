@@ -206,7 +206,30 @@ const updateVideo = asynchandler(async (req, res) => {
 
 const deleteVideo = asynchandler(async (req, res) => {
     const { videoId } = req.params
-    if(vid)
+    if(!videoId && !isValidObjectId(videoId)){
+        throw new Apierror(400,"incalid video id in parmas")
+    }
+
+    const video = await Video.findById(videoId)
+    if(!video){
+        throw new Apierror(400,"video not found")
+    }
+
+    if(video?.owner.toString()!==req.user?._id.toString()){
+        throw new Apierror(401,"only owner can delete the video")
+    }
+
+    const  deleteVideo = await Video.findByIdAndDelete(videoId)
+
+    if(!deleteVideo){
+        throw new Apierror(401," try again later")
+    }
+
+    return res.status(200).
+    json( new ApiResponse(200,
+        {},
+        "successfully delete the video"
+    ))
 })
 
 const togglePublishStatus = asynchandler(async (req, res) => {
