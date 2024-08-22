@@ -231,38 +231,26 @@ const deleteVideo = asynchandler(async (req, res) => {
         "successfully delete the video"
     ))
 })
+const togglePublishStatus = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
 
-const togglePublishStatus = asynchandler(async (req, res) => {
-    const { videoId } = req.params
-    if(!videoId && !isValidObjectId(videoId)){
-        throw new Apierror(400,"incalid video id in parmas")
+    if (!videoId || !isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid video Id");
     }
 
-    const video = await Video.findById(videoId)
-    if(!video){
-        throw new Apierror(400,"video not found")
+    const video = await Video.findById(videoId);
+
+    if (!video) {
+        throw new ApiError(401, "Video not found");
     }
 
-    if(video?.owner.toString()!==req.user?._id.toString()){
-        throw new Apierror(401,"only owner can delete the video")
-    }
+    video.isPublished = !video.isPublished;
+    await video.save({ validateBeforeSave: false });
 
-    const toggleVideo = await Video.findByIdAndUpdate(videoId
-        ,
-        {
-            $set: {
-                ispublished : !video.ispublished
-            }
-        },
-        {
-            new :true
-        }
-    )
-
-    return res.status(200)
-    .json(new ApiResponse(200,toggleVideo,"video toggle succesfully"))
-})
-
+    return res.status(200).json(
+        new ApiResponse(200, video, "Toggle publish successful")
+    );
+});
 export {
     getAllVideos,
     publishAVideo,
