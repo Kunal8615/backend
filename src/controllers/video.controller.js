@@ -127,7 +127,7 @@ const publishAVideo = asynchandler(async (req, res) => {
     }
     const videoData = await Video.findById(video._id)
     if (!videoData) {
-        throw new ApiError(410 , "video data not found")
+        throw new Apierror(410 , "video data not found")
     }
 
     
@@ -137,7 +137,22 @@ const publishAVideo = asynchandler(async (req, res) => {
 
 const getVideoById = asynchandler(async (req, res) => {
     const { videoId } = req.params
-    //TODO: get video by id
+    if(!videoId && isValidObjectId(videoId)){
+        throw Apierror(401,"videoid is in valid")
+    }
+
+    const video = await Video.findById(videoId)
+    if(!video){
+        throw new Apierror(401,"video not found")
+    }
+
+    if(video){
+        video.views = video.views+1
+        await video.save({validateBeforeSave : true})
+    }
+
+    return res.status(200).json(new ApiResponse(200, video," video fetched succedfully"))
+
 })
 
 const updateVideo = asynchandler(async (req, res) => {
