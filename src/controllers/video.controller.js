@@ -157,8 +157,51 @@ const getVideoById = asynchandler(async (req, res) => {
 
 const updateVideo = asynchandler(async (req, res) => {
     const { videoId } = req.params
-    //TODO: update video details like title, description, thumbnail
+   if(!mongoose.isValidObjectId(videoId) && !videoId){
+    throw Apierror(401,"invalid video id");
+   }
 
+   const video = await Video.findById(videoId)
+   if(!video){
+    throw new Apierror(401, "video not found")
+   }
+   if(video?.owner.toString()!==req.user?._id.toString()){
+    throw new ApiResponse(401,"only owner can change")
+   }
+
+   const thumbnailLocalPath = req.files?.path
+   if (!thumbnailLocalPath) {
+       throw new Apierror(401,"Thumbnail not found")
+   }
+
+   const uploadThumbnail = await uploadOnCloudinary(thumbnailLocalPath)
+
+   const updatedVideo = await Video.findByIdAndUpdate(
+    videoId,
+    {
+        $set: {
+            title,
+            description,
+            thumbnail : uploadThumbnail.url
+        }
+    },
+    {
+        new: true
+    }
+   )
+
+   if(!videoUpload){
+    throw new Apierror(401 , "video not found")
+   }
+   return res
+   .status(200)
+   .json(
+       new ApiResponse(
+           200,
+           updatedVideo,
+           "video data updated sucessfully"
+       )
+   )
 })
 
 const deleteVideo = asynchandler(async (req, res) => {
