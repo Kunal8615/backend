@@ -11,7 +11,9 @@ const createTweet = asynchandler(async (req, res) => {
         throw new Apierror("Enter valid content");
     }
     console.log("req.user:", req.user); // Debug log
+   
     const user = await User.findById(req.user?._id);
+   
     console.log("User found:", user); // Debug log
     if (!user) {
         throw new Apierror(400, "Couldn't find the user");
@@ -24,7 +26,7 @@ const createTweet = asynchandler(async (req, res) => {
     if(!tweet){
         throw new Apierror(500, "Try again later");
     }
-    return res.status(200).json(new Apisuccess(200, "Tweeted successfully", tweet));
+    return res.status(200).json(new ApiResponse(200, tweet, "Tweeted successfully"));
 
 })
 

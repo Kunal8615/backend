@@ -79,7 +79,24 @@ const getAllVideos = asynchandler(async (req, res) => {
 
 const publishAVideo = asynchandler(async (req, res) => {
     const { title, description } = req.body
-    // TODO: get video, upload to cloudinary, create video
+    if(!title && !description){
+        throw Apierror(402," title and description required ")
+    }
+    const user = await User.findById(req.user?._id)
+    if(!user){
+        throw Apierror(400," user not found")
+    }
+
+    const postvideo = await Video.create({
+        title : title,
+        description : description
+    });
+    if(!publishAVideo){
+        throw Apierror(500,"try again later")
+    }
+    
+    return res.status(200).
+    json(new ApiResponse(200,publishAVideo,"video is publish"))
 })
 
 const getVideoById = asynchandler(async (req, res) => {
