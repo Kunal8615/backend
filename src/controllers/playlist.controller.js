@@ -29,7 +29,34 @@ const createPlaylist = asynchandler(async (req, res) => {
 
 const getUserPlaylists = asynchandler(async (req, res) => {
     const {userId} = req.params
-    //TODO: get user playlists
+    if (!userId || !isValidObjectId(userId)) {
+        throw new Apierror(400 , "Invalid Object Id")
+    }
+    const user = await User.findById(userId).select("-password -refreshToken");
+    console.log("user : " ,user)
+
+    if (!user) {
+        throw new Apierror(400 , "user not found")
+    }
+    const playlists = await Playlist.find({owner : userId})
+    console.log(playlists);
+
+    if (!playlists) {
+        throw new Apierror(400 , "playlist not found")
+    }
+
+    
+    return res
+    .status(200)
+    .json(
+        new Apiresponce(
+            200,
+            playlists,
+            "playlists fetched sucessfully"
+        )
+    )
+
+   
 })
 
 const getPlaylistById = asynchandler(async (req, res) => {
