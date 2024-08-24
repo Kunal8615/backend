@@ -93,7 +93,7 @@ const addVideoToPlaylist = asynchandler(async (req, res) => {
 
     for(let i = 0 ; i < playlist.videos.length ; i++ ){
         if(playlist.videos[i] == videoId){
-            throw new ApiError(401 , "video is already available in playlist")
+            throw new Apierror(401 , "video is already available in playlist")
         }
     }
 
@@ -197,13 +197,13 @@ const updatePlaylist = asynchandler(async (req, res) => {
     )
 
     if (!playlist) {
-        throw new ApiError(401 , "playlist not found")
+        throw new Apierror(401 , "playlist not found")
     }
 
     return res
     .status(200)
     .json(
-        new ApiResponse(
+        new Apiresponce(
             200, 
             playlist,
             "playlist update successfully"
