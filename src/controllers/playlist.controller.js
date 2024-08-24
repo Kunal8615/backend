@@ -61,16 +61,90 @@ const getUserPlaylists = asynchandler(async (req, res) => {
 
 const getPlaylistById = asynchandler(async (req, res) => {
     const {playlistId} = req.params
-    //TODO: get playlist by id
+    if(!playlistId && !isValidObjectId(playlistId)){
+        throw new Apierror(401,"invalid playlist id")
+    }
+
+    const playlist = await Playlist.findById(playlistId)
+
+    if(!playlist){
+        throw new Apierror(440,"playlist not found")
+    }
+
+    return res.status(200)
+    .json(new Apiresponce(200,playlist," playist fetched"))
 })
 
 const addVideoToPlaylist = asynchandler(async (req, res) => {
     const {playlistId, videoId} = req.params
+    if(!playlistId && !videoId){
+        throw new Apierror(401," wrong id's")
+    }
+    if(!isValidObjectId(playlistId) && !isValidObjectId(videoId)){
+        throw new Apierror(401, " not a valid object in db")
+    }
+
+    const playlist = await Playlist.findById(playlistId)
+
+    if(!playlistId){
+        throw new Apierror(400," playlist not found")
+    }
+
+
+    for(let i = 0 ; i < playlist.videos.length ; i++ ){
+        if(playlist.videos[i] == videoId){
+            throw new ApiError(401 , "video is already available in playlist")
+        }
+    }
+
+    await playlist.videos.push(videoId)
+    await playlist.save({validateBeforeSave : true})
+
+    return res
+    .status(200)
+    .json(
+        new Apiresponce(
+            200,
+            playlist,
+            "video added sucessfully"
+        )
+    )
+
 })
 
 const removeVideoFromPlaylist = asynchandler(async (req, res) => {
     const {playlistId, videoId} = req.params
-    // TODO: remove video from playlist
+
+    if (!playlistId || !isValidObjectId(playlistId)) {
+        throw new Apierror(400 , "playlist id not found")
+    }
+
+    if (!videoId || !isValidObjectId(videoId)) {
+        throw new Apierror(400 , "video id not found")
+    }
+
+    const playlist = await Playlist.findById(playlistId)
+    console.log(playlist.videos[0])
+
+    if (!playlist) {
+        throw new Apierror(401 , "playlist not found in database")
+    }
+
+    const updatedPlaylist = await Playlist.videos.filter((item)=>{
+        return !item.equal(videoId)
+    })
+    playlist.video = updatePlaylist
+    await playlist.save({validateBeforeSave : true})
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            playlist,
+            "video remove sucessfully "
+        )
+    )
 
 })
 

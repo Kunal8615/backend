@@ -43,7 +43,7 @@ const getUserTweets = asynchandler(async (req, res) => {
  const alltweet = await Tweet.find({
     owner :userid
  })
- if(alltweets.length===0){
+ if(alltweet.length===0){
     throw new Apierror(400,"No tweets by the user")
  }
  return res.status(200)
