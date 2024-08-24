@@ -139,7 +139,7 @@ const removeVideoFromPlaylist = asynchandler(async (req, res) => {
     return res
     .status(200)
     .json(
-        new ApiResponse(
+        new Apiresponce(
             200,
             playlist,
             "video remove sucessfully "
@@ -151,12 +151,65 @@ const removeVideoFromPlaylist = asynchandler(async (req, res) => {
 const deletePlaylist = asynchandler(async (req, res) => {
     const {playlistId} = req.params
     // TODO: delete playlist
+
+    if (!playlistId || !isValidObjectId(playlistId)) {
+        throw new Apierror(400 , "Invalid playlist Id")
+    }
+
+    const deletePlaylist = await Playlist.deleteOne({_id : playlistId})
+
+    if (deletePlaylist.deletedCount === 0) {
+        throw new Apierror(401 , "Playlist not found")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new Apiresponce(
+            200,
+            {},
+            "playlist deleted"
+        )
+    )
+    
 })
 
 const updatePlaylist = asynchandler(async (req, res) => {
     const {playlistId} = req.params
     const {name, description} = req.body
     //TODO: update playlist
+
+    if(!playlistId && !isValidObjectId(playlistId)){
+        throw new Apierror(400,"not a valid playlist id")
+    }
+
+
+    const playlist = await Playlist.findOneAndUpdate(playlistId,
+        {
+            $set : {
+                name,
+                description
+            }
+        },
+        {
+            new : true
+        }
+    )
+
+    if (!playlist) {
+        throw new ApiError(401 , "playlist not found")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200, 
+            playlist,
+            "playlist update successfully"
+        )
+    )
+
 })
 
 export {
