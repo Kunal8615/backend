@@ -25,12 +25,14 @@ import likeroute from "../src/routes/like.route.js"
 import commentroute from "../src/routes/comment.route.js"
 import videoroute from "../src/routes/video.route.js"
 import dashboard from "../src/routes/dashboard.route.js"
+import playlistroute from "../src/routes/playlist.route.js"
 //ROUTERS DECLEATION by middleware
 app.use("/api/v1/users",userrouter)
 app.use("/api/v1/comment",commentroute)
-app.use("/api/v1/comment/tweet",tweetroute)
-app.use("/api/v1/comment/like",likeroute)
-app.use("/api/v1/comment/video",videoroute)
-app.use("/api/v1/comment/dashboard",dashboard)
+app.use("/api/v1/tweet",tweetroute)
+app.use("/api/v1/like",likeroute)
+app.use("/api/v1/video",videoroute)
+app.use("/api/v1/dashboard",dashboard)
+app.use("/api/v1/playlist",playlistroute)
 
 export {app}
