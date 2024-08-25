@@ -69,7 +69,7 @@ const getUserChannelSubscribers = asynchandler(async (req, res) => {
         }
     ])
     if (!subscribers) {
-        throw new ApiError(300 , "subscribers not found")
+        throw new Apierror(300 , "subscribers not found")
     }
 
     return res
@@ -106,7 +106,7 @@ const getSubscribedChannels = asynchandler(async (req, res) => {
     ])
 
     if (!subscribedChannel) {
-        throw new ApiError(300 , "subscribed channel not found")
+        throw new Apierror(300 , "subscribed channel not found")
     }
 
     return res
