@@ -10,8 +10,8 @@ import {uploadonCloundinary} from "../utils/cloudinary.js"
 const getAllVideos = asynchandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
     //TODO: get all videos based on query, sort, pagination
-    if (!userId || isValidObjectId(userId)) {
-        throw Apierror(400, "usernot found")
+    if (!userId || !isValidObjectId(userId)) {
+        throw new Apierror(400, "usernot found")
     }
     const videos = await User.aggregate([
         {
@@ -136,29 +136,29 @@ const publishAVideo = asynchandler(async (req, res) => {
 })
 
 const getVideoById = asynchandler(async (req, res) => {
-    const { videoId } = req.params
-    if (!videoId && isValidObjectId(videoId)) {
-        throw new Apierror(401, "videoid is in valid")
+    const { videoId } = req.params;
+    if (!videoId || !isValidObjectId(videoId)) { 
+        throw new Apierror(401,"videoid is invalid"); 
     }
 
-    const video = await Video.findById(videoId)
+    const video = await Video.findById(videoId);
     if (!video) {
-        throw new Apierror(401, "video not found")
+        throw new Apierror(401,"video not found"); 
     }
 
     if (video) {
-        video.views = video.views + 1
-        await video.save({ validateBeforeSave: true })
+        video.views = video.views + 1;
+        await video.save({ validateBeforeSave: true });
     }
 
-    return res.status(200).json(new Apiresponce(200, video, " video fetched succedfully"))
+    return res.status(200).json(new Apiresponce(200, video, "video fetched successfully"));
+});
 
-})
 
 const updateVideo = asynchandler(async (req, res) => {
     const { videoId } = req.params
    if(!mongoose.isValidObjectId(videoId) && !videoId){
-    throw Apierror(401,"invalid video id");
+    throw new Apierror(401,"invalid video id");
    }
 
    const video = await Video.findById(videoId)
