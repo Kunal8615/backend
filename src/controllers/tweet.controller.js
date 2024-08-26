@@ -1,9 +1,9 @@
 import mongoose, { isValidObjectId } from "mongoose"
 import {Tweet} from "../models/tweet.model.js"
-import {User} from "../models/user.model.js"
+import User from "../models/user.model.js"
 import { Apierror } from "../utils/Apierror.js"
-import {ApiResponse} from "../utils/ApiResponse.js"
-import {asynchandler} from "../utils/asyncHandler.js"
+import { Apiresponce } from "../utils/Apiresponce.js"
+import { asynchandler } from "../utils/Asynchander.js"
 
 const createTweet = asynchandler(async (req, res) => {
     const {content} = req.body
@@ -26,7 +26,7 @@ const createTweet = asynchandler(async (req, res) => {
     if(!tweet){
         throw new Apierror(500, "Try again later");
     }
-    return res.status(200).json(new ApiResponse(200, tweet, "Tweeted successfully"));
+    return res.status(200).json(new Apiresponce(200, tweet, "Tweeted successfully"));
 
 })
 
@@ -106,7 +106,7 @@ const deleteTweet = asynchandler(async (req, res) => {
         throw new Apierror(500,"Try again later")
     }
     return res.status(200)
-    .json(new Apisuccess(200,"Tweet deleted successfully",{}))
+    .json(new Apiresponce(200,{},"Tweet deleted successfully"))
 })
 
 export {

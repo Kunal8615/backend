@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import verifyJWT from "../middlewares/auth.middleware"
+import verifyJWT from "../middlewares/auth.middleware.js"
 import {
     addVideoToPlaylist,
     createPlaylist,

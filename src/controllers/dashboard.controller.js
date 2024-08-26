@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
-import { Apierror } from "../utils/Apierror";
-const {channelid} = req.params
-import { asynchandler } from "../utils/Asynchander";
-import { Apierror } from "../utils/Apierror";
-import { Apiresponce } from "../utils/Apiresponce";
-import User from "../models/user.model";
+import { Apierror } from "../utils/Apierror.js";
+import { asynchandler } from "../utils/Asynchander.js";
+
+import { Apiresponce } from "../utils/Apiresponce.js";
+import User from "../models/user.model.js";
 
 
 const getChannelStats = asynchandler(async (req, res) => {
+    const {channelid} = req.params
    if(!mongoose.isValidObjectId(channelid)){
     throw Apierror(200,"channle no found")
    }

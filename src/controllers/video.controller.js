@@ -1,10 +1,10 @@
 import mongoose, { isValidObjectId } from "mongoose"
 import { Video } from "../models/video.model.js"
-import { User } from "../models/user.model.js"
+import  User  from "../models/user.model.js"
 import { Apierror } from "../utils/Apierror.js"
-import { ApiResponse } from "../utils/ApiResponse.js"
-import { asynchandler } from "../utils/asyncHandler.js"
-import { uploadOnCloudinary } from "../utils/cloudinary.js"
+import { Apiresponce } from "../utils/Apiresponce.js"
+import { asynchandler } from "../utils/Asynchander.js"
+import {uploadonCloundinary} from "../utils/cloudinary.js"
 
 
 const getAllVideos = asynchandler(async (req, res) => {
@@ -41,7 +41,7 @@ const getAllVideos = asynchandler(async (req, res) => {
         return res
             .status(200)
             .json(
-                ApiResponse(200, {}, "np videos there")
+                Apiresponce(200, {}, "np videos there")
             )
     }
     let filteredVideos = videos.map(v => v.videos); // Extract the videos array
@@ -68,7 +68,7 @@ const getAllVideos = asynchandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(
+            new Apiresponce(
                 200,
                 paginate(page, limit, videos),
                 "Video fetched successfully"
@@ -132,7 +132,7 @@ const publishAVideo = asynchandler(async (req, res) => {
 
 
     return res.status(200).
-        json(new ApiResponse(200, videoData, "video is publish"))
+        json(new Apiresponce(200, videoData, "video is publish"))
 })
 
 const getVideoById = asynchandler(async (req, res) => {
@@ -151,7 +151,7 @@ const getVideoById = asynchandler(async (req, res) => {
         await video.save({ validateBeforeSave: true })
     }
 
-    return res.status(200).json(new ApiResponse(200, video, " video fetched succedfully"))
+    return res.status(200).json(new Apiresponce(200, video, " video fetched succedfully"))
 
 })
 
@@ -166,7 +166,7 @@ const updateVideo = asynchandler(async (req, res) => {
     throw new Apierror(401, "video not found")
    }
    if(video?.owner.toString()!==req.user?._id.toString()){
-    throw new ApiResponse(401,"only owner can change")
+    throw new Apiresponce(401,"only owner can change")
    }
 
    const thumbnailLocalPath = req.files?.path
@@ -196,7 +196,7 @@ const updateVideo = asynchandler(async (req, res) => {
    return res
    .status(200)
    .json(
-       new ApiResponse(
+       new Apiresponce(
            200,
            updatedVideo,
            "video data updated sucessfully"
@@ -226,12 +226,12 @@ const deleteVideo = asynchandler(async (req, res) => {
     }
 
     return res.status(200).
-    json( new ApiResponse(200,
+    json( new Apiresponce(200,
         {},
         "successfully delete the video"
     ))
 })
-const togglePublishStatus = asyncHandler(async (req, res) => {
+const togglePublishStatus = asynchandler(async (req, res) => {
     const { videoId } = req.params;
 
     if (!videoId || !isValidObjectId(videoId)) {
@@ -248,7 +248,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     await video.save({ validateBeforeSave: false });
 
     return res.status(200).json(
-        new ApiResponse(200, video, "Toggle publish successful")
+        new Apiresponce(200, video, "Toggle publish successful")
     );
 });
 export {

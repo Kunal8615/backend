@@ -1,13 +1,13 @@
 import { Router } from "express";
-import verifyJWT from "../middlewares/auth.middleware";
+import verifyJWT from "../middlewares/auth.middleware.js";
 const router = Router();
 import { getAllVideos,
     publishAVideo,
     getVideoById,
     updateVideo,
     deleteVideo,
-    togglePublishStatus} from "../controllers/video.controller"
-import { upload } from "../middlewares/multer.middleware";
+    togglePublishStatus} from "../controllers/video.controller.js"
+import { upload } from "../middlewares/multer.middleware.js";
 
 
 router.use(verifyJWT);
@@ -19,7 +19,7 @@ router.route("/").get(getAllVideos).post(
             maxCount : 1
         },
         {
-            name : thumbnail,
+            name : 'thumbnail',
             maxCount : 1
         }
     ]),

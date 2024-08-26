@@ -1,10 +1,10 @@
 import { Router } from "express";
-import verifyJWT from "../middlewares/auth.middleware"
+import verifyJWT from "../middlewares/auth.middleware.js";
 const router = Router();
 import {createTweet,
     getUserTweets,
     updateTweet,
-    deleteTweet} from "../controllers/tweet.controller"
+    deleteTweet} from "../controllers/tweet.controller.js"
 
 router.use(verifyJWT)
 

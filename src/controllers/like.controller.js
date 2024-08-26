@@ -1,7 +1,7 @@
-import { Apierror } from "../utils/Apierror";
-import { Apiresponce } from "../utils/Apiresponce";
-import { asynchandler } from "../utils/Asynchander";
-import { Like } from "../models/like.model";
+import {Apierror} from "../utils/Apierror.js"
+import { Apiresponce } from "../utils/Apiresponce.js";
+import { asynchandler } from "../utils/Asynchander.js";
+import { Like } from "../models/like.model.js";
 import mongoose from "mongoose";
 
 const toggleVideoLike = asynchandler(async (req, res) => {
@@ -110,7 +110,7 @@ const getLikedVideos = asynchandler(async (req, res) => {
    }
 
    return res.status(200)
-   .json(new Apiresponce(200,{likedVideos},"Fetched all the liked video successfully"))
+   .json(new Apiresponce(200,{likedvideos},"Fetched all the liked video successfully"))
 })
 
 export {
