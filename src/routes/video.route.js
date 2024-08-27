@@ -28,7 +28,8 @@ router.route("/").post(
 
 router.route("/all-videos/:userId").get(getAllVideos);
 router
-.route("/video-by-id/:videoId").get(getVideoById).delete(deleteVideo).patch(upload.fields("thumbnail"),updateVideo);
-
+.route("/video-by-id/:videoId").get(getVideoById);
+router.route("/delete-video/:videoId").delete(deleteVideo)
+router.route("/update-video/:videoId").patch(upload.fields("thumbnail"),updateVideo)
 router.route("/toggle/publish/:videoid").patch(togglePublishStatus);
 export default router
