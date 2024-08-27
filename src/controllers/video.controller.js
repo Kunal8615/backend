@@ -157,7 +157,7 @@ const getVideoById = asynchandler(async (req, res) => {
 
 const updateVideo = asynchandler(async (req, res) => {
     const { videoId  } = req.params
-    const { title, description } = req.body;
+    const { title, description ,thumbnail} = req.body;
 
    if(!mongoose.isValidObjectId(videoId) && !videoId){
     throw new Apierror(401,"invalid video id");
@@ -171,7 +171,7 @@ const updateVideo = asynchandler(async (req, res) => {
     throw new Apiresponce(401,"only owner can change")
    }
 
-   const thumbnailLocalPath = req.files?.path
+   const thumbnailLocalPath = req.files?.thumbnail[0]?.path
    if (!thumbnailLocalPath) {
        throw new Apierror(401,"Thumbnail not found")
    }
@@ -192,7 +192,7 @@ const updateVideo = asynchandler(async (req, res) => {
     }
    )
 
-   if(!videoUpload){
+   if(!updatedVideo){
     throw new Apierror(401 , "video not found")
    }
    return res
@@ -234,19 +234,23 @@ const deleteVideo = asynchandler(async (req, res) => {
     ))
 })
 const togglePublishStatus = asynchandler(async (req, res) => {
-    const { videoId } = req.params;
-
-    if (!videoId || !isValidObjectId(videoId)) {
-        throw new Apierror(400, "Invalid video Id");
+    console.log(req.params);
+    var { videoid } = req.params;
+    console.log(videoid);
+    if (!videoid ) {
+        throw new Apierror(400, "Invalid-video-Id");
     }
-
-    const video = await Video.findById(videoId);
+    if(!isValidObjectId(videoid)){
+        throw new Apierror(401, "invalid object in DB")
+    }
+ 
+    const video = await Video.findById(videoid);
 
     if (!video) {
         throw new Apierror(401, "Video not found");
     }
 
-    video.isPublished = !video.isPublished;
+    video.ispublished = !video.ispublished;
     await video.save({ validateBeforeSave: false });
 
     return res.status(200).json(
