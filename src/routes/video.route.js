@@ -12,7 +12,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 
 router.use(verifyJWT);
 
-router.route("/").get(getAllVideos).post(
+router.route("/").post(
     upload.fields([
         {
             name : 'videofile',
@@ -26,8 +26,9 @@ router.route("/").get(getAllVideos).post(
     publishAVideo
 );
 
+router.route("/all-videos/:userId").get(getAllVideos);
 router
-.route("/:videoId").get(getVideoById).delete(deleteVideo).patch(upload.fields("thumbnail"),updateVideo);
+.route("/video-by-id/:videoId").get(getVideoById).delete(deleteVideo).patch(upload.fields("thumbnail"),updateVideo);
 
 router.route("/toggle/publish/:videoid").patch(togglePublishStatus);
 export default router

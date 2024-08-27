@@ -2,13 +2,13 @@ import mongoose, { isValidObjectId } from "mongoose"
 import { Video } from "../models/video.model.js"
 import  User  from "../models/user.model.js"
 import { Apierror } from "../utils/Apierror.js"
-import { Apiresponce } from "../utils/Apiresponce.js"
+import {Apiresponce} from "../utils/Apiresponce.js"
 import { asynchandler } from "../utils/Asynchander.js"
 import {uploadonCloundinary} from "../utils/cloudinary.js"
 
 
 const getAllVideos = asynchandler(async (req, res) => {
-    const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
+    const { page = 1, limit = 10, query, sortBy, sortType , userId } = req.params
     //TODO: get all videos based on query, sort, pagination
     if (!userId || !isValidObjectId(userId)) {
         throw new Apierror(400, "usernot found")
@@ -23,16 +23,16 @@ const getAllVideos = asynchandler(async (req, res) => {
             $lookup: {
                 from: "videos",
                 localField: "_id",
-                forignFeild: "owner",
-                as: "Videos"
+                foreignField: "owner",
+                as: "videos"
             }
         },
         {
-            $unwind: "Videos"
+            $unwind: "$videos"
         },
         {
             $project: {
-                Videos: 1,
+                videos: 1,
                 _id: 0
             }
         }
@@ -41,7 +41,7 @@ const getAllVideos = asynchandler(async (req, res) => {
         return res
             .status(200)
             .json(
-                Apiresponce(200, {}, "np videos there")
+               new Apiresponce(200, {}, "np videos there")
             )
     }
     let filteredVideos = videos.map(v => v.videos); // Extract the videos array
@@ -62,7 +62,7 @@ const getAllVideos = asynchandler(async (req, res) => {
     const paginate = (page, limit, videos) => {
         const startingIndex = (page - 1) * limit
         const endIndex = page * limit
-        return filteredVideos.slice(startingIndex, endIndex)
+        return videos.slice(startingIndex, endIndex)
     }
 
     return res
@@ -70,7 +70,7 @@ const getAllVideos = asynchandler(async (req, res) => {
         .json(
             new Apiresponce(
                 200,
-                paginate(page, limit, videos),
+                paginate(page, limit, filteredVideos),
                 "Video fetched successfully"
             )
         )
