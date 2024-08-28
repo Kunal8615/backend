@@ -9,8 +9,8 @@ import {createTweet,
 router.use(verifyJWT)
 
 router.route("/create-tweet").post(createTweet);
-router.route("/get-tweet/:username").get(getUserTweets);
-router.route("/update-tweet").patch(verifyJWT,updateTweet);
-router.route("delete-tweet/:tweetid").delete(deleteTweet)
+router.route("/get-tweet/:userid").get(getUserTweets);
+router.route("/update-tweet/:tweetid").patch(updateTweet);
+router.route("/delete-tweet/:tweetid").delete(deleteTweet);
 
 export default router

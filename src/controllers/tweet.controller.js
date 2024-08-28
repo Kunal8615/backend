@@ -33,7 +33,7 @@ const getUserTweets = asynchandler(async (req, res) => {
    if(!isValidObjectId(userid)){
     throw new Apierror(400,"Invalid user id")
    }
-   if(!user){
+   if(!userid){
     throw new Apierror(400,"User does not exist")
  }
 
@@ -45,7 +45,7 @@ const getUserTweets = asynchandler(async (req, res) => {
     throw new Apierror(400,"No tweets by the user")
  }
  return res.status(200)
-     .json(new Apisuccess(200,"All tweets fetched successfully",{alltweets}))
+     .json(new Apiresponce(200,alltweet,"All tweets fetched successfully"))
 
 })
 
@@ -81,7 +81,7 @@ if(!tweet){
     throw new Apierror(500,"Try again later")
 }
 return res.status(200)
-.json(new Apisuccess(200,"Tweet updated successfully",tweet))
+.json(new Apiresponce(200,tweet,"Tweet updated successfully"))
 })
 
 const deleteTweet = asynchandler(async (req, res) => {
