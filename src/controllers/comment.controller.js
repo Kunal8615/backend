@@ -100,7 +100,7 @@ const updateComment = asynchandler(async (req, res) => {
         throw new Apierror(404, "Couldnt update the comment")
     }
     return res.status(200)
-        .json(new Apisuccess(200, "Comment updated successfully", comment))
+        .json(new Apiresponce(200,comment, "Comment updated successfully"))
 })
 
 const deleteComment = asynchandler(async (req, res) => {
