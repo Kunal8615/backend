@@ -5,29 +5,36 @@ import { Like } from "../models/like.model.js";
 import mongoose from "mongoose";
 
 const toggleVideoLike = asynchandler(async (req, res) => {
-    const {videoId} = req.params
-    if(!mongoose.isValidObjectId(videoId)){
-        throw new Apierror(400,"Invalid Videoid")
+    const { videoid } = req.params;
+
+    if (!mongoose.isValidObjectId(videoid)) {
+        throw new Apierror(400, "Invalid Video ID");
     }
 
-    const videoLikeAlready =await Like.findOne({
-        $and : [{video :videoId},{likedby:req.user?._id}]
-    })
+    // Check if the video is already liked by the user
+    const videoLikeAlready = await Like.findOne({
+        video: videoid,
+        LikedBy: req.user._id
+    });
 
-    if(videoLikeAlready){
-        await Like.findByIdAndDelete(
-            videoLikeAlready?._id
-        )
-    }
-    else{
+    if (videoLikeAlready) {
+        // If liked already, remove the like (dislike)
+        await Like.findByIdAndDelete(videoLikeAlready?._id);
+
+        return res.status(201)
+            .json(new Apiresponce(200, {}, "Video disliked successfully"));
+    } else {
+        // If not liked, create a new like
         await Like.create({
-            video:videoId,
-            likedby:req.user?._id
-        })
+            video: videoid,
+            LikedBy: req.user._id
+        });
+
+        return res.status(200)
+            .json(new Apiresponce(200, {}, "Video liked successfully"));
     }
-    return res.status(200)
-    .json(new Apiresponce(200,{},"Liked already"))
-})
+});
+
 
 const toggleCommentLike = asynchandler(async (req, res) => {
     const {commentId} = req.params
