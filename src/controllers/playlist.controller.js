@@ -113,40 +113,47 @@ const addVideoToPlaylist = asynchandler(async (req, res) => {
 })
 
 const removeVideoFromPlaylist = asynchandler(async (req, res) => {
-    const {playlistId, videoId} = req.params
+    const { playlistId, videoId } = req.params;
 
     if (!playlistId || !isValidObjectId(playlistId)) {
-        throw new Apierror(400 , "playlist id not found")
+        throw new Apierror(400, "playlist id not found");
     }
 
     if (!videoId || !isValidObjectId(videoId)) {
-        throw new Apierror(400 , "video id not found")
+        throw new Apierror(400, "video id not found");
     }
 
-    const playlist = await Playlist.findById(playlistId)
-    console.log(playlist.videos[0])
+    const playlist = await Playlist.findById(playlistId);
 
     if (!playlist) {
-        throw new Apierror(401 , "playlist not found in database")
+        throw new Apierror(401, "playlist not found in database");
     }
 
-    const updatedPlaylist = await Playlist.videos.filter((item)=>{
-        return !item.equal(videoId)
-    })
-    playlist.video = updatePlaylist
-    await playlist.save({validateBeforeSave : true})
+    // Debugging line
+    console.log("Playlist Videos:", playlist.videos);
+
+    if (!Array.isArray(playlist.videos)) {
+        throw new Apierror(400, "playlist videos should be an array");
+    }
+
+    const updatedPlaylist = playlist.videos.filter((item) => {
+        return !item.equals(videoId);
+    });
+
+    playlist.videos = updatedPlaylist;
+    await playlist.save({ validateBeforeSave: true });
 
     return res
-    .status(200)
-    .json(
-        new Apiresponce(
-            200,
-            playlist,
-            "video remove sucessfully "
-        )
-    )
+        .status(200)
+        .json(
+            new Apiresponce(
+                200,
+                playlist,
+                "video removed successfully"
+            )
+        );
+});
 
-})
 
 const deletePlaylist = asynchandler(async (req, res) => {
     const {playlistId} = req.params
