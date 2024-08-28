@@ -14,7 +14,7 @@ const likeschema = new Schema(
             type : Schema.Types.ObjectId,
             ref : "Tweet"
         },
-        LikedBy: {
+        LikedBy : {
             type : Schema.Types.ObjectId,
             ref : "User"
         }

@@ -3,13 +3,14 @@ import { toggleCommentLike ,toggleTweetLike,
 import { Router } from "express";
 import verifyJWT from "../middlewares/auth.middleware.js";
 
+
 const router = Router();
 
 router.use(verifyJWT);
 
 router.route("/toggle-video/:videoid").post(toggleVideoLike);
-router.route("/toggle/v/:channelid").post(toggleCommentLike);
-router.route("/toggle/v/:tweetid").post(toggleTweetLike);
-router.route("/all-liked-video/:userid")
+router.route("/toggle-comment/:commentId").post(toggleCommentLike);
+router.route("/toggle-tweet/:tweetId").post(toggleTweetLike);
+router.route("/all-liked-video").get(getLikedVideos)
 
 export default router
