@@ -7,21 +7,19 @@ import { asynchandler } from "../utils/Asynchander.js"
 
 const createTweet = asynchandler(async (req, res) => {
     const {content} = req.body
-    if (!content || content.trim().length === 0) {
-        throw new Apierror("Enter valid content");
+  //  console.log("req.user:", req.user._id); // Debug log
+    
+    if (!content ) {
+        throw new Apierror(401,"Enter valid content");
     }
-    console.log("req.user:", req.user); // Debug log
    
-    const user = await User.findById(req.user?._id);
-   
-    console.log("User found:", user); // Debug log
-    if (!user) {
-        throw new Apierror(400, "Couldn't find the user");
-    }
+   if(!isValidObjectId(req.user._id)){
+    throw new Apierror(401,"user not registered")
+   }
 
     const tweet = await Tweet.create({
         content : content,
-        owner : req._id
+        owner : req.user?._id
     });
     if(!tweet){
         throw new Apierror(500, "Try again later");
