@@ -58,7 +58,6 @@ const getAllVideos = asynchandler(async (req, res) => {
             }
         });
     }
-
     const paginate = (page, limit, videos) => {
         const startingIndex = (page - 1) * limit
         const endIndex = page * limit

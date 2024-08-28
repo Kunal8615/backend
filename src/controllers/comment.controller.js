@@ -14,28 +14,52 @@ const getVideoComments = asynchandler(async (req, res) => {
     if(!isValidObjectId(videoId)){
         throw new Apierror(400,"Invalid video id")
     }
-    const allcommentsinvideo=await Comment.aggregate([
-        {
-          $match:{
-            video:new mongoose.Types.ObjectId(videoId)
-          }
-        },
-        {
-            $lookup:{
-                from:""
+    const allcommentsinvideo = await Video.aggregate(
+        [
+            {
+              $match: {
+                _id : new mongoose.Types.ObjectId(videoId)
+              }
+            },
+            {
+              $lookup: {
+                from: "comments",
+                localField: "_id",
+                foreignField: "video",
+                as: "allComment"
+              }
+            },
+            {
+              $unwind: "$allComment"
+            },
+            {
+              $project: {
+                allComment : 1,
+                _id : 0
+              }
             }
-        }
-])
+          ]
+    )
+
+if(!allcommentsinvideo){
+    throw new Apierror(401, " no comments there")
+}
+
+return res.status(200)
+.json(new Apiresponce(200, allcommentsinvideo,"fetched all comments of video "))
 
 
 })
 
 const addComment = asynchandler(async (req, res) => {
-    const { videoId } = req.params
-    const { content } = req.body
+    const { videoId } = req.params;
+    const { content } = req.body;
+    if (!videoId || !isValidObjectId(videoId)) {
+        throw new Apierror(400, "Video  id not found")
+    }
     const video = await Video.findById(videoId)
-    if (!video) {
-        throw new Apierror(400, "Video not found")
+    if (!content ) {
+        throw new Apierror(400, "content not found")
     }
     const comment = await Comment.create({
         content: content,
@@ -46,7 +70,7 @@ const addComment = asynchandler(async (req, res) => {
         throw new Apierror(404, "Couldnt comment")
     }
     return res.status(200)
-        .json(new Apisuccess(200, comment, "Commented Successfully"))
+        .json(new Apiresponce(200, comment, "Commented Successfully"))
 })
 
 const updateComment = asynchandler(async (req, res) => {
