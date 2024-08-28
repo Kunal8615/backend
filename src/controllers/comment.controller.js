@@ -105,7 +105,7 @@ const updateComment = asynchandler(async (req, res) => {
 
 const deleteComment = asynchandler(async (req, res) => {
     const { commentid } = req.params;
-    const comment = await findById(commentid);
+    const comment = await Comment.findById(commentid);
     if (!comment) {
         throw new Apierror(402, "Couldnt find the comment")
     }
