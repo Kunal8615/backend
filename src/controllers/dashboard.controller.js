@@ -93,7 +93,7 @@ const getChannelStats = asynchandler(async (req, res) => {
 
 const getChannelVideos = asynchandler(async (req, res) => {
     const {channelid} = req.params
-    if(!channelid || mongoose.isValidObjectId(channelid)){
+    if(!channelid && mongoose.isValidObjectId(channelid)){
         throw new Apierror(401 , "Invalid user Id")
     }
 
