@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
-import { API_URL } from '../constant';
+import React, { useState } from "react";
+import { API_URL } from "../constant";
+import { Link ,useNavigate} from "react-router-dom";
 const SignUp = () => {
   const [user, setUser] = useState({
-    fullname: '',
-    username: '', // Added username to state
-    email: '',
-    password: '',
+    fullname: "",
+    username: "", // Added username to state
+    email: "",
+    password: "",
     avatar: null,
     coverimage: null,
   });
 
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'avatar' || name === 'coverimage') {
+    if (name === "avatar" || name === "coverimage") {
       setUser({
         ...user,
         [name]: files[0],
@@ -29,20 +31,20 @@ const SignUp = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('fullname', user.fullname);
-    formData.append('username', user.username); // Added username to formData
-    formData.append('email', user.email);
-    formData.append('password', user.password);
+    formData.append("fullname", user.fullname);
+    formData.append("username", user.username); // Added username to formData
+    formData.append("email", user.email);
+    formData.append("password", user.password);
     if (user.avatar) {
-      formData.append('avatar', user.avatar);
+      formData.append("avatar", user.avatar);
     }
     if (user.coverimage) {
-      formData.append('coverimage', user.coverimage);
+      formData.append("coverimage", user.coverimage);
     }
 
     try {
       const response = await fetch(`${API_URL}/users/register`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
 
@@ -51,10 +53,11 @@ const SignUp = () => {
       }
 
       const data = await response.json();
-      console.log('Form submitted:', data);
+      console.log("Form submitted:", data);
     } catch (error) {
-      console.error('Error during submission:', error);
+      console.error("Error during submission:", error);
     }
+    navigate("/login");
   };
 
   return (
@@ -73,12 +76,12 @@ const SignUp = () => {
           />
         </div>
         <div className="form-group">
-          <label>Enter your Username</label> 
+          <label>Enter your Username</label>
           <input
             type="text"
-            name="username"  
+            name="username"
             placeholder="Enter your Username"
-            value={user.username}  
+            value={user.username}
             onChange={handleChange}
             required
           />
@@ -125,7 +128,9 @@ const SignUp = () => {
         </div>
         <button type="submit">Signup</button>
       </form>
-      <p>Already have an account? <a href="/login">Sign In</a></p>
+      <p>
+        Already have an account? <Link to="/login">Sign In</Link>
+      </p>
     </div>
   );
 };

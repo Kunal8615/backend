@@ -15,8 +15,7 @@ const getVideoComments = asynchandler(async (req, res) => {
         throw new Apierror(400,"Invalid video id")
     }
     const allcommentsinvideo = await Video.aggregate(
-        [
-            {
+        [ {
               $match: {
                 _id : new mongoose.Types.ObjectId(videoId)
               }
