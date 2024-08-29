@@ -88,66 +88,66 @@ const getChannelStats = asynchandler(async (req, res) => {
 });
 
 
-    
+
 
 
 const getChannelVideos = asynchandler(async (req, res) => {
-    const {channelid} = req.params
-    if(!channelid && mongoose.isValidObjectId(channelid)){
-        throw new Apierror(401 , "Invalid user Id")
+    const { channelid } = req.params
+    if (!channelid && mongoose.isValidObjectId(channelid)) {
+        throw new Apierror(401, "Invalid user Id")
     }
 
     const channelvideos = await User.aggregate([
         {
-             $match:{
-                _id : new mongoose.Types.ObjectId(channelid)
-             }
+            $match: {
+                _id: new mongoose.Types.ObjectId(channelid)
+            }
         },
 
         {
-            $lookup : {
-                from : "videos",
-                localField : "_id",
+            $lookup: {
+                from: "videos",
+                localField: "_id",
                 foreignField: "owner",
-                as : "video"
+                as: "video"
             }
         },
         {
-            $project : {
-                video : 1,
-                _id : 0
+            $project: {
+                video: 1,
+                _id: 0
             }
         },
         {
-            $unwind : "$video"
+            $unwind: "$video"
         }
     ])
 
     if (!channelvideos) {
         return res
-        .status(200)
-        .json(
-            new Apiresponce(
-                200 ,
-                {},
-                "User does't uploaded any videos"
+            .status(200)
+            .json(
+                new Apiresponce(
+                    200,
+                    {},
+                    "User does't uploaded any videos"
+                )
             )
-        )
     }
 
     return res
-    .status(200)
-    .json(
-        new Apiresponce(
-            200,
-            channelvideos,
-            "User videos fetched"
+        .status(200)
+        .json(
+            new Apiresponce(
+                200,
+                channelvideos,
+                "User videos fetched"
+            )
         )
-    )
 
 })
 
 export {
-    getChannelStats, 
+    getChannelStats,
     getChannelVideos
-    }
+}
