@@ -31,19 +31,8 @@ const toggleSubscription = asynchandler(async (req, res) => {
             channel : channelId,
             subscriber : req.user?._id
         })
+        return res.status(200).json(new Apiresponce(200, subscriberd, "Subscribed successfully"));
     }
-
-    if (!subscriberd) {
-        new Apierror(500, "something went wrong while save the subscription data")
-    }
-
-    const subscribedData = await Subscription.findById(subscribedData._id)
-    
-    if (!subscribedData) {
-        throw new Apierror(401, "Data not found")
-    }
-
-    return res.status(200).json(new Apiresponce(200, subscribedData, "Subscribed successfully"));
 
 
 })
