@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { API_URL } from '../constant';
 const SignUp = () => {
   const [user, setUser] = useState({
     fullname: '',
@@ -41,7 +41,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/users/register', {
+      const response = await fetch(`${API_URL}/users/register`, {
         method: 'POST',
         body: formData,
       });
