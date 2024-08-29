@@ -23,7 +23,7 @@ const toggleSubscription = asynchandler(async (req, res) => {
             subscriber : req.user?._id
         })
 
-        return res.status(200).json(new Apiresponce(200, null, "Unsubscribed successfully"));
+        return res.status(200).json(new Apiresponce(200, null, "Unsubscribed"));
     }
 
     else{
@@ -31,7 +31,7 @@ const toggleSubscription = asynchandler(async (req, res) => {
             channel : channelId,
             subscriber : req.user?._id
         })
-        return res.status(200).json(new Apiresponce(200, subscriberd, "Subscribed successfully"));
+        return res.status(200).json(new Apiresponce(200, subscriberd, "Subscribed "));
     }
 
 
