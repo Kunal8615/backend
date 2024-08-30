@@ -77,38 +77,42 @@ const getAllVideos = asynchandler(async (req, res) => {
 })
 
 const publishAVideo = asynchandler(async (req, res) => {
-    const { title, description } = req.body
+    const { title, description } = req.body;
+
     if (!title && !description) {
-        throw new Apierror(402, " title and description required ")
-    }
-    const videoLocalPath = req.files?.videofile[0]?.path
-    const thumbnailLocalPath = req.files?.thumbnail[0]?.path
-
-    if (!videoLocalPath) {
-        throw new Apierror(400, "video must be required")
+        throw new Apierror(402, "Title and description are required");
     }
 
-    if (!thumbnailLocalPath) {
-        throw new Apierror(400, "thumbnail must be required")
+    // Check if files are present
+    const videoFiles = req.files?.videofile;
+    const thumbnailFiles = req.files?.thumbnail;
+
+    if (!videoFiles || !videoFiles[0]) {
+        throw new Apierror(400, "Video file must be required");
     }
 
-    ///upload on cloudnairy
+    if (!thumbnailFiles || !thumbnailFiles[0]) {
+        throw new Apierror(400, "Thumbnail file must be required");
+    }
 
-    const videoUpload = await uploadonCloundinary(videoLocalPath) //return url
-    const thumbnail = await uploadonCloundinary(thumbnailLocalPath)
+    const videoLocalPath = videoFiles[0].path;
+    const thumbnailLocalPath = thumbnailFiles[0].path;
 
+    // Upload on Cloudinary
+    const videoUpload = await uploadonCloundinary(videoLocalPath); // return URL
+    const thumbnail = await uploadonCloundinary(thumbnailLocalPath);
 
     if (!videoUpload) {
-        throw new Apierror(500, "something went wrong while uploading the video on cloudinary")
+        throw new Apierror(500, "Something went wrong while uploading the video on Cloudinary");
     }
 
     if (!thumbnail) {
-        throw new Apierror(500, "something went wrong while uploading thumbnail on cloudinary")
+        throw new Apierror(500, "Something went wrong while uploading thumbnail on Cloudinary");
     }
 
-    const user = await User.findById(req.user?._id)
+    const user = await User.findById(req.user?._id);
     if (!user) {
-        throw new Apierror(400, " user not found")
+        throw new Apierror(400, "User not found");
     }
 
     const video = await Video.create({
@@ -119,20 +123,21 @@ const publishAVideo = asynchandler(async (req, res) => {
         duration: videoUpload.duration,
         views: 0,
         ispublished: true,
-        owner: req.user?._id
+        owner: req.user?._id,
     });
+
     if (!video) {
-        throw new Apierror(500, "try again later")
+        throw new Apierror(500, "Try again later");
     }
-    const videoData = await Video.findById(video._id)
+
+    const videoData = await Video.findById(video._id);
     if (!videoData) {
-        throw new Apierror(410, "video data not found")
+        throw new Apierror(410, "Video data not found");
     }
 
+    return res.status(200).json(new Apiresponce(200, videoData, "Video is published"));
+});
 
-    return res.status(200).
-        json(new Apiresponce(200, videoData, "video is publish"))
-})
 
 const getVideoById = asynchandler(async (req, res) => {
     const { videoId } = req.params;
