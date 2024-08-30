@@ -31,18 +31,22 @@ const Header = () => {
   // Handle sign-out
   const handleSignOut = async () => {
     try {
-      // Optionally notify the server (depends on your implementation)
-      const response = await fetch(`${API_URL}/users/logout`,{
-        method: "POST",
-        credentials : "include"
-      });
-       console.log( response);
-      if (!response) {
-        throw new Error('Failed to sign out');
-      }
 
-      navigate('/login');
-      // Redirect to login page
+      setTimeout(async()=>{
+        const response = await fetch(`${API_URL}/users/logout`,{
+          method: "POST",
+          credentials : "include"
+        });
+         console.log( response);
+        if (!response) {
+          throw new Error('Failed to sign out');
+        }
+  
+        navigate('/login');
+        // Redirect to login page
+      },2000)
+      
+    
     } catch (error) {
       console.error('Error signing out:', error);
       setError('Error signing out');

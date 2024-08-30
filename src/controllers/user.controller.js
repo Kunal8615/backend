@@ -126,6 +126,7 @@ const logoutUser = asynchandler(async (req, res) => {
         httpOnly: true,
         secure: true
       };
+ 
   console.log("user logout done");
       return res.status(200)
         .clearCookie("accessToken", options).clearCookie("refreshToken", options)
