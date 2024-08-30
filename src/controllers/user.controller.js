@@ -101,9 +101,10 @@ const loginUser = asynchandler(async (req, res) => {
     const   loggedinUser = await User.findById(user._id).select("-password -refreshToken");
     const options = {
         httpOnly: true,
-        secure: true
+       
+        expires: new Date(Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000)
     };
-    console.log("login done");
+    console.log( loggedinUser,"login done");
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)
@@ -230,7 +231,7 @@ const changeUserName = asynchandler(async (req, res) => {
 
 const getCurrentUser = asynchandler(async(req,res)=>{
     return res.status(200)
-    .json(new Apiresponce(200,res.user,"user current user"))
+    .json(new Apiresponce(200,req.user,"user current user"))
 })
 
 //
@@ -254,6 +255,7 @@ const updateAccountDetail = asynchandler(async(req,res)=>{
         return res.status(200)
         .json(new Apiresponce(200,user,"account detail updated successfully"))
 })
+
 
 //file update
 

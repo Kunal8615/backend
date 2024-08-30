@@ -27,6 +27,7 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials : "include",
         body: JSON.stringify(credentials),
       });
 
@@ -45,8 +46,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex  items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
+    <div className="flex  items-center justify-center min-h-screen bg-black">
+      <div className="w-full border-slate-500 border-4 max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center text-gray-700">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="form-group">
