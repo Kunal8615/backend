@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { API_URL } from "../constant";
 import VideoCard from "../components/VideoCard";
+import MainHeader from "../components/header/mainHeader";
 
 const UserProfile = () => {
   const [profileImages, setProfileImages] = useState({
@@ -91,8 +92,31 @@ const UserProfile = () => {
     fetchProfileImages();
   }, []);
 
-  return (
+  const handleDeleteVideo = async (videoId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this video?");
+    if (confirmed) {
+      try {
+        const response = await fetch(`${API_URL}/video/delete-video/${videoId}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to delete video");
+        }
+
+        // Update the video list after deletion
+        setVideos(videos.filter((video) => video._id !== videoId));
+      } catch (error) {
+        console.error("Error deleting video:", error);
+      }
+    }
+  };
+
+  return (<>
+    <MainHeader/>
     <div className="bg-gray-900 text-white min-h-screen">
+      {/* Profile header */}
       <div className="relative">
         <img
           src={profileImages.backgroundImage}
@@ -107,32 +131,40 @@ const UserProfile = () => {
           />
         </div>
       </div>
-      <div className="bg-gray-900 text-white flex items-center justify-center pt-2">
-        <div className="flex space-x-6 ">
-          <div className="bg-gradient-to-r from-blue-500 to-teal-500 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
-            <h3 className="text-2xl font-semibold mb-2">Subscriber Count</h3>
-            <p className="text-4xl font-bold">{user.subscriber}</p>
-          </div>
-          <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
-            <h3 className="text-2xl font-semibold mb-2">Total videos</h3>
-            <p className="text-4xl font-bold">{user.channel_subs}</p>
-          </div>
-          <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
-            <h3 className="text-2xl font-semibold mb-2">Total views</h3>
-            <p className="text-4xl font-bold">{user.Totalview}</p>
-          </div>
-        </div>
-      </div>
 
-      {/** Video segment */}
+      {/* User stats */}
+      <div className="bg-gray-900 text-white flex items-center justify-center pt-2">
+  <div className="flex space-x-6">
+    <div className="bg-gray-800 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
+      <h3 className="text-xl font-medium mb-2">Subscriber </h3>
+      <p className="text-3xl font-semibold text-teal-400">{user.subscriber}</p>
+    </div>
+    <div className="bg-gray-800 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
+      <h3 className="text-xl font-medium mb-2">Total Videos</h3>
+      <p className="text-3xl font-semibold text-purple-400">{user.channel_subs}</p>
+    </div>
+    <div className="bg-gray-800 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
+      <h3 className="text-xl font-medium mb-2">Total Views</h3>
+      <p className="text-3xl font-semibold text-pink-400">{user.Totalview}</p>
+    </div>
+  </div>
+</div>
+
+      {/* Video segment */}
       <div className="bg-gray-900 min-h-screen p-8">
         <div className="container mx-auto">
           <h1 className="text-2xl font-semibold text-white mb-6">Videos</h1>
           <div className="flex flex-wrap -m-4">
             {videos.length > 0 ? (
               videos.map((video) => (
-                <div key={video._id} className="p-4">
+                <div key={video._id} className="p-4 relative">
                   <VideoCard video={video} />
+                  <button
+                    onClick={() => handleDeleteVideo(video._id)}
+                    className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))
             ) : (
@@ -142,6 +174,7 @@ const UserProfile = () => {
         </div>
       </div>
     </div>
+                </>
   );
 };
 

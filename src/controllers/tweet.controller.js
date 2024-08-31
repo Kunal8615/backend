@@ -107,9 +107,37 @@ const deleteTweet = asynchandler(async (req, res) => {
     .json(new Apiresponce(200,{},"Tweet deleted successfully"))
 })
 
+const getAllTweets = asynchandler(async (req, res) => {
+    const alltweets = await Tweet.aggregate([
+      {
+        $lookup: {
+          from: 'users', 
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'user', 
+        },
+      },
+      {
+        $unwind: '$user', 
+      },
+      {
+        $project: {
+          _id: 1,
+          content: 1,
+          createdAt: 1,
+          'user.username': 1,
+        },
+      },
+    ]);
+  
+    return res.status(200).json(new Apiresponce(200, { alltweets }, 'All Tweets fetched'));
+  });
+
+
 export {
     createTweet,
     getUserTweets,
     updateTweet,
-    deleteTweet
+    deleteTweet,
+    getAllTweets
 }

@@ -261,8 +261,80 @@ const togglePublishStatus = asynchandler(async (req, res) => {
         new Apiresponce(200, video, "Toggle publish successful")
     );
 });
+
+const getAllUsersVideos = asynchandler(async (req, res) => {
+    const { page = 1, limit = 10, query, sortBy, sortType } = req.params;
+
+    //TODO: get all videos based on query, sort, pagination
+    const users = await User.find({});
+
+    if (!users) {
+        throw new Apierror(400, "No users found");
+    }
+
+    const videos = await User.aggregate([
+        {
+            $lookup: {
+                from: "videos",
+                localField: "_id",
+                foreignField: "owner",
+                as: "videos",
+            },
+        },
+        {
+            $unwind: "$videos",
+        },
+        {
+            $project: {
+                videos: 1,
+                _id: 0,
+            },
+        },
+    ]);
+
+    if (videos.length === 0) {
+        return res.status(200).json(new Apiresponce(200, {}, "No videos found"));
+    }
+
+    let filteredVideos = videos.map((v) => v.videos); // Extract the videos array
+
+    if (query) {
+        filteredVideos = filteredVideos.filter(
+            (video) =>
+                video.title.toLowerCase().includes(query.toLowerCase()) ||
+                video.description.toLowerCase().includes(query.toLowerCase())
+        );
+    }
+
+    if (sortBy && sortType) {
+        filteredVideos.sort((a, b) => {
+            if (sortType === "asc") {
+                return a[sortBy] > b[sortBy] ? 1 : -1;
+            } else {
+                return a[sortBy] < b[sortBy] ? 1 : -1;
+            }
+        });
+    }
+
+    const paginate = (page, limit, videos) => {
+        const startingIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        return videos.slice(startingIndex, endIndex);
+    };
+
+    return res.status(200).json(
+        new Apiresponce(
+            200,
+            paginate(page, limit, filteredVideos),
+            "Videos fetched successfully"
+        )
+    );
+});
+
+
 export {
     getAllVideos,
+    getAllUsersVideos,
     publishAVideo,
     getVideoById,
     updateVideo,

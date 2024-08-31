@@ -1,16 +1,14 @@
 import React from 'react'
-import Header from '../components/header/Header'
+
 import { Outlet, useNavigate } from 'react-router-dom'
-import Sidebar from './Slidebar'
+import MainHeader from '../components/header/mainHeader'
 
 function Homepage() {
   return (
    <>
-    <Header/>
-    <div className='flex gap-5'>
-      <Sidebar/>
-      <Outlet/>
-    </div>
+  <MainHeader/>
+ 
+   
    </>
   )
 }
