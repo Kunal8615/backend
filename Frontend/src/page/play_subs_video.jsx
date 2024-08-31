@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '../constant';
+import CommentsList from '../components/Comment';
 
 const VideoPlayer = ({ video }) => {
     const [isSubscribed, setIsSubscribed] = useState(false);
@@ -8,6 +9,7 @@ const VideoPlayer = ({ video }) => {
     useEffect(() => {
         const fetchStatuses = async () => {
             try {
+                 video = video;
                 // Fetch the current subscription status from the API
                 const subscriptionResponse = await fetch(`${API_URL}/subscription/toggle-subs/${video.owner}`);
                 const subscriptionData = await subscriptionResponse.json();
@@ -67,6 +69,7 @@ const VideoPlayer = ({ video }) => {
                 },
             });
             const data = await response.json();
+            console.log(data.message);
             if (data.success) {
                 setIsLiked(!isLiked);
             } else {
@@ -101,6 +104,8 @@ const VideoPlayer = ({ video }) => {
                     {isLiked ? 'Unlike' : 'Like'}
                 </button>
             </div>
+
+            <CommentsList videoId={video} />
         </div>
     );
 };
