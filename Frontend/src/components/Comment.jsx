@@ -3,11 +3,13 @@ import { API_URL } from '../constant';
 
 const Comment = ({ comment, ownerUsername }) => {
     return (
-        <div className="comment p-2 mb-2 border rounded-lg bg-gray-100">
-            <p className="font-semibold">{ownerUsername}</p> {/* Displaying the fetched username */}
-            <p>{comment.content}</p>
-            <p className="text-xs text-gray-500">{new Date(comment.createdAt).toLocaleString()}</p> {/* Displaying the comment date */}
-        </div>
+        <div className="comment p-4 mb-4 border-2 border-gray-400 rounded-lg bg-gray-50 shadow-lg">
+        <p className="  font-bold text-blue-700">{ownerUsername}</p> {/* Displaying the fetched username */}
+        <p className="text-black mt-2">{comment.content}</p> {/* Comment content with spacing */}
+        <p className="text-xs text-gray-500 mt-3">{new Date(comment.createdAt).toLocaleString()}</p> {/* Displaying the comment date */}
+    </div>
+    
+    
     );
 };
 

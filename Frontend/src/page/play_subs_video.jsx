@@ -81,32 +81,35 @@ const VideoPlayer = ({ video }) => {
     };
 
     return (
-        <div className="video-player p-4 bg-white rounded-lg shadow-md">
-            <div className="video-container mb-4">
-                <video width="100%" height="auto" controls className="rounded-lg">
-                    <source src={video.videofile} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">{video.title}</h3>
-            <p className="text-sm text-gray-600 mb-4">{video.description}</p>
-            <div className="flex space-x-2">
-                <button 
-                    className='bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition'
-                    onClick={handleSubscribeToggle}
-                >
-                    {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
-                </button>
-                <button 
-                    className='bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition'
-                    onClick={handleLikeToggle}
-                >
-                    {isLiked ? 'Unlike' : 'Like'}
-                </button>
-            </div>
-
-            <CommentsList videoId={video} />
+        <div className="video-player p-6 bg-white rounded-xl shadow-lg">
+        <div className="video-container mb-6">
+            <video width="100%" height="auto" controls className="rounded-xl shadow-md">
+                <source src={video.videofile} type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
         </div>
+        <h3 className="text-2xl font-bold text-gray-800 mb-3">{video.title}</h3>
+        <p className="text-base text-gray-700 mb-5">{video.description}</p>
+        <p className="text-base text-gray-700 mb-5">Views  {video.views}</p>
+        <p className="text-base text-gray-700 mb-5">  {video.owner}</p>
+        <div className="flex space-x-4">
+            <button 
+                className='bg-red-500 text-white text-lg px-4 py-2 font-bold rounded-lg hover:bg-red-600 transition-transform transform hover:scale-105'
+                onClick={handleSubscribeToggle}
+            >
+                {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
+            </button>
+            <button 
+                className='bg-blue-500 text-white text-lg font-bold px-4 py-2 rounded-lg hover:bg-blue-600 transition-transform transform hover:scale-105'
+                onClick={handleLikeToggle}
+            >
+                {isLiked ? 'Unlike' : 'Like'}
+            </button>
+        </div>
+    
+        <CommentsList videoId={video} />
+    </div>
+    
     );
 };
 
