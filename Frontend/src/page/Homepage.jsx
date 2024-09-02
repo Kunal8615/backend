@@ -9,7 +9,6 @@ function Homepage() {
    <>
  
  
-<VideoCard/>
 
  
    

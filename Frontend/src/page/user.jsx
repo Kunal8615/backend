@@ -9,7 +9,6 @@ const UserProfile = () => {
     profileImage: "https://via.placeholder.com/128", // Fallback profile image
     userid: "",
     username : ""
-  
   });
 
   const [user, setUser] = useState({
@@ -116,69 +115,72 @@ const UserProfile = () => {
     }
   };
 
-  return (<>
-    <MainHeader/>
-    <div className="bg-gray-900 text-white min-h-screen">
-      {/* Profile header */}
-      <div className="relative">
-        <img
-          src={profileImages.backgroundImage}
-          alt="Background"
-          className="w-full h-60 object-cover"
-        />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+  return (
+    <>
+      <MainHeader />
+      <div className="bg-gray-900 text-white min-h-screen">
+        {/* Profile header */}
+        <div className="relative">
           <img
-            src={profileImages.profileImage}
-            alt="Profile"
-            className="w-32 h-32 rounded-full border-4 border-white"
+            src={profileImages.backgroundImage}
+            alt="Background"
+            className="w-full h-60 object-cover sm:h-48 md:h-56"
           />
-      <p className="  text-xl  border-4 border-purple-700 absolute top-1/2 left-1/2 pl-5 pr-5  mt-24 font-bold text-black rounded-lg bg-orange-200 p-1 transform -translate-x-1/2 -translate-y-1/2 ">  {profileImages.username}</p>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+            <img
+              src={profileImages.profileImage}
+              alt="Profile"
+              className="w-32 h-32 rounded-full border-4 border-white"
+            />
+            <p className="text-xl font-bold bg-black  pt-2 pb-2 rounded-full pr-5 pl-5 border-2 border- text-white mt-2">{profileImages.username}</p>
+          </div>
         </div>
-      </div>
 
-      {/* User stats */}
-      <div className="bg-gray-900 text-white flex items-center justify-center pt-2">
-  <div className="flex space-x-6">
-    <div className="bg-gray-800 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
-      <h3 className="text-xl font-medium mb-2">Subscriber </h3>
-      <p className="text-3xl font-semibold text-teal-400">{user.subscriber}</p>
-    </div>
-    <div className="bg-gray-800 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
-      <h3 className="text-xl font-medium mb-2">Total Videos</h3>
-      <p className="text-3xl font-semibold text-purple-400">{user.channel_subs}</p>
-    </div>
-    <div className="bg-gray-800 p-8 rounded-lg shadow-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
-      <h3 className="text-xl font-medium mb-2">Total Views</h3>
-      <p className="text-3xl font-semibold text-pink-400">{user.Totalview}</p>
-    </div>
-  </div>
-</div>
+        {/* User stats */}
+        <div className="bg-gray-900 text-white flex flex-col items-center pt-6 sm:pt-4">
+          <div className="flex flex-wrap gap-6 justify-center">
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center transition-transform transform hover:scale-105">
+              <h3 className="text-xl font-medium mb-2">Subscriber</h3>
+              <p className="text-2xl font-semibold text-teal-400">{user.subscriber}</p>
+            </div>
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center transition-transform transform hover:scale-105">
+              <h3 className="text-xl font-medium mb-2">Total Videos</h3>
+              <p className="text-2xl font-semibold text-purple-400">{user.channel_subs}</p>
+            </div>
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center transition-transform transform hover:scale-105">
+              <h3 className="text-xl font-medium mb-2">Total Views</h3>
+              <p className="text-2xl font-semibold text-pink-400">{user.Totalview}</p>
+            </div>
+          </div>
+        </div>
 
-      {/* Video segment */}
-      <div className="bg-gray-900 min-h-screen p-8">
-        <div className="container mx-auto">
-          <h1 className="text-2xl font-semibold text-white mb-6">Videos</h1>
-          <div className="flex flex-wrap -m-4">
-            {videos.length > 0 ? (
-              videos.map((video) => (
-                <div key={video._id} className="p-4 relative">
-                  <VideoCard video={video} />
-                  <button
-                    onClick={() => handleDeleteVideo(video._id)}
-                    className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))
-            ) : (
-              <p className="text-white">No videos available.</p>
-            )}
+        {/* Video segment */}
+        <div className="bg-gray-900 p-8">
+          <div className="container mx-auto">
+            <h1 className="text-2xl font-semibold text-white mb-6">Videos</h1>
+            <div className="flex flex-wrap -m-4">
+              {videos.length > 0 ? (
+                videos.map((video) => (
+                  <div key={video._id} className="p-4 w-full sm:w-1/2 lg:w-1/3 xl:w-1/4">
+                    <div className="relative">
+                      <VideoCard video={video} />
+                      <button
+                        onClick={() => handleDeleteVideo(video._id)}
+                        className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-white text-center">No videos available.</p>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-                </>
+    </>
   );
 };
 
