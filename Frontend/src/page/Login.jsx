@@ -36,7 +36,7 @@ const Login = () => {
       }
 
       const data = await response.json();
-      console.log('Login successful:', data);
+      console.log('Login successful:');
 
       navigate('/profile');
     } catch (error) {
