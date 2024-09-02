@@ -1,12 +1,16 @@
 import React from 'react'
 
-import { Outlet, useNavigate } from 'react-router-dom'
+
 import MainHeader from '../components/header/mainHeader'
+import VideoCard from '../components/VideoCard'
 
 function Homepage() {
   return (
    <>
-  <MainHeader/>
+ 
+ 
+<VideoCard/>
+
  
    
    </>

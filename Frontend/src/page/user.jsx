@@ -8,6 +8,8 @@ const UserProfile = () => {
     backgroundImage: "https://via.placeholder.com/800x300", // Fallback cover image
     profileImage: "https://via.placeholder.com/128", // Fallback profile image
     userid: "",
+    username : ""
+  
   });
 
   const [user, setUser] = useState({
@@ -36,6 +38,7 @@ const UserProfile = () => {
             backgroundImage: data.data.coverimage,
             profileImage: data.data.avatar,
             userid: data.data._id,
+            username : data.data.username
           });
 
           fetchUserStats(data.data._id);
@@ -129,6 +132,7 @@ const UserProfile = () => {
             alt="Profile"
             className="w-32 h-32 rounded-full border-4 border-white"
           />
+      <p className="  text-xl  border-4 border-purple-700 absolute top-1/2 left-1/2 pl-5 pr-5  mt-24 font-bold text-black rounded-lg bg-orange-200 p-1 transform -translate-x-1/2 -translate-y-1/2 ">  {profileImages.username}</p>
         </div>
       </div>
 

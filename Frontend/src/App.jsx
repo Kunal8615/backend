@@ -7,6 +7,7 @@ import UserProfile from './page/user';
 import TweetList from "./page/Tweet"
 import MainHeader from './components/header/mainHeader';
 import VideoList from './page/all_videos';
+import LikedVideosList from './page/Liked_video';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path ="/homepage" element={ <MainHeader/>} />
       <Route path="/profile" element={<UserProfile />} />
       <Route path="/videolist" element={<VideoList />} />
+      <Route path="/likedvideos" element={<LikedVideosList />} />
       
       </Routes>
     </Router>
