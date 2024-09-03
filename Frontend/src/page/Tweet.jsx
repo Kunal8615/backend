@@ -131,12 +131,12 @@ const TweetList = () => {
   return (
     <>
       <MainHeader />
-      <div className="bg-slate-800 p-6    mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">Recent Tweets</h2>
+      <div className="bg-black p-6    mx-auto">
+        <h2 className="text-3xl font-bold text-white mb-6">Recent Tweets</h2>
         <div className="flex justify-between mb-6">
           <button
             onClick={() => setIsCreating(true)}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition"
+            className="bg-purple-600 font-semibold text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition"
           >
             Create Tweet
           </button>

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { API_URL } from "../constant";
 import { Link, useNavigate } from "react-router-dom";
@@ -62,104 +61,116 @@ const SignUp = () => {
       navigate("/login");
     } catch (error) {
       console.error("Error during submission:", error);
-      alert('Registration failed! Please try again.');
+      alert("Registration failed! Please try again.");
     } finally {
-      setLoading(false); // Set loading to false after response
+      setLoading(false); 
     }
   };
 
   return (
     <div className="bg-blue-950">
-
-    <div className="max-w-lg mx-auto p-6 border-4 border-slate-700 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="form-group">
-          <label className="block text-sm font-medium mb-1">Enter your Fullname</label>
-          <input
-            type="text"
-            name="fullname"
-            placeholder="Enter your Fullname"
-            value={user.fullname}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="form-group">
-          <label className="block text-sm font-medium mb-1">Enter your Username</label>
-          <input
-            type="text"
-            name="username"
-            placeholder="Enter your Username"
-            value={user.username}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md"
+      <div className="max-w-lg mx-auto p-6 border-4 border-slate-700 bg-white shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="form-group">
+            <label className="block text-sm font-medium mb-1">
+              Enter your Fullname
+            </label>
+            <input
+              type="text"
+              name="fullname"
+              placeholder="Enter your Fullname"
+              value={user.fullname}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded-md"
             />
-        </div>
-        <div className="form-group">
-          <label className="block text-sm font-medium mb-1">Enter your Email</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your Email"
-            value={user.email}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="form-group">
-          <label className="block text-sm font-medium mb-1">Enter your Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your Password"
-            value={user.password}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="form-group">
-          <label className="block text-sm font-medium mb-1">Avatar</label>
-          <input
-            type="file"
-            name="avatar"
-            onChange={handleChange}
-            accept="image/*"
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="form-group">
-          <label className="block text-sm font-medium mb-1">Cover Image</label>
-          <input
-            type="file"
-            name="coverimage"
-            onChange={handleChange}
-            accept="image/*"
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
-          disabled={loading} // Disable button when loading
-        >
-          {loading ? "Signing Up..." : "Signup"} 
-        </button>
-      </form>
-      <p className="mt-4 text-center">
-        Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Sign In</Link>
-      </p>
-      {loading && (
-        <div className="flex justify-center mt-4">
-          <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
-        </div>
-      )}
-    </div>
+          </div>
+          <div className="form-group">
+            <label className="block text-sm font-medium mb-1">
+              Enter your Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              placeholder="Enter your Username"
+              value={user.username}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-sm font-medium mb-1">
+              Enter your Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your Email"
+              value={user.email}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-sm font-medium mb-1">
+              Enter your Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your Password"
+              value={user.password}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-sm font-medium mb-1">Avatar</label>
+            <input
+              type="file"
+              name="avatar"
+              onChange={handleChange}
+              accept="image/*"
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-sm font-medium mb-1">
+              Cover Image
+            </label>
+            <input
+              type="file"
+              name="coverimage"
+              onChange={handleChange}
+              accept="image/*"
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-blue-900 text-white rounded-md hover:bg-blue-600 transition duration-200"
+            disabled={loading} // Disable button when loading
+          >
+            {loading ? "Signing Up..." : "Signup"}
+          </button>
+        </form>
+        <p className="mt-4 text-center">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Sign In
+          </Link>
+        </p>
+        {loading && (
+          <div className="flex justify-center mt-4">
+            <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+          </div>
+        )}
       </div>
+    </div>
   );
 };
 

@@ -9,25 +9,26 @@ const VideoCard = ({ video }) => {
   return (
     <>
       <div
-        className="bg-gray-800 text-white rounded-lg shadow-lg w-64 h-80 overflow-hidden transform hover:scale-105 transition-transform duration-300 cursor-pointer"
+        className="bg-gray-800 text-white rounded-lg shadow-lg w-64 h-64 overflow-hidden transform hover:scale-105 transition-transform duration-300 cursor-pointer"
         onClick={openModal}
       >
         <img
           src={video.thumbnail}
           alt={video.title}
-          className="w-full h-40 object-cover"
+          className="w-full h-36 object-cover"
         />
-        <div className="p-4 flex flex-col justify-between h-40">
+        <div className="p-4 flex flex-col  h-40">
           <h2 className="text-lg font-semibold truncate">{video.title}</h2>
-          <p className="text-sm text-gray-400 flex-grow overflow-hidden line-clamp-2">
-            {video.description}
+          <p className="text-sm font-semibold truncate text-orange-400">
+            {" "}
+            Views: {video.views}
           </p>
-          <div className="flex items-center justify-between mt-4">
-            <span className="text-sm text-gray-400">Views: {video.views}</span>
-            <span className="text-sm text-gray-400">
-              {new Date(video.createdAt).toLocaleDateString()}
-            </span>
-          </div>
+          <p className="text-sm text-gray-400 overflow-hidden line-clamp-2"> Description : 
+            {" "} {  video.description}
+          </p>
+          <p className="text-sm text-slate-50 "> Upload :   
+            - {new Date(video.createdAt).toLocaleDateString()}
+          </p>
         </div>
       </div>
 

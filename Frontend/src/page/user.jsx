@@ -132,7 +132,7 @@ const UserProfile = () => {
               alt="Profile"
               className="w-32 h-32 rounded-full border-4 border-white"
             />
-            <p className="text-xl font-bold bg-black  pt-2 pb-2 rounded-full pr-5 pl-5 border-2 border- text-white mt-2">{profileImages.username}</p>
+            <p className="text-xl font-bold bg-black  pt-2 pb-2 rounded-full pr-5 pl-5 border-2 border- text-yellow-400 mt-2">{profileImages.username}</p>
           </div>
         </div>
 
@@ -166,7 +166,7 @@ const UserProfile = () => {
                       <VideoCard video={video} />
                       <button
                         onClick={() => handleDeleteVideo(video._id)}
-                        className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                        className="absolute top-2  bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
                       >
                         Delete
                       </button>

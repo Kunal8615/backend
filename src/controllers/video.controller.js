@@ -295,17 +295,17 @@ const getAllUsersVideos = asynchandler(async (req, res) => {
     if (videos.length === 0) {
         return res.status(200).json(new Apiresponce(200, {}, "No videos found"));
     }
-
+    
     let filteredVideos = videos.map((v) => v.videos); // Extract the videos array
-
+    
     if (query) {
         filteredVideos = filteredVideos.filter(
             (video) =>
                 video.title.toLowerCase().includes(query.toLowerCase()) ||
-                video.description.toLowerCase().includes(query.toLowerCase())
+            video.description.toLowerCase().includes(query.toLowerCase())
         );
     }
-
+    
     if (sortBy && sortType) {
         filteredVideos.sort((a, b) => {
             if (sortType === "asc") {
@@ -315,13 +315,14 @@ const getAllUsersVideos = asynchandler(async (req, res) => {
             }
         });
     }
-
+    
     const paginate = (page, limit, videos) => {
         const startingIndex = (page - 1) * limit;
         const endIndex = page * limit;
         return videos.slice(startingIndex, endIndex);
     };
-
+  
+    
     return res.status(200).json(
         new Apiresponce(
             200,
@@ -332,6 +333,29 @@ const getAllUsersVideos = asynchandler(async (req, res) => {
 });
 
 
+const getUserByVideoId = asynchandler(async (req, res) => {
+    const { videoId } = req.params;
+
+    if (!videoId || !mongoose.isValidObjectId(videoId)) {
+        throw new Apierror(400, "Invalid video ID");
+    }
+
+    const video = await Video.findById(videoId);
+
+    if (!video) {
+        throw new Apierror(404, "Video not found");
+    }
+
+    const user = await User.findById(video.owner);
+
+    if (!user) {
+        throw new Apierror(404, "User not found for this video");
+    }
+
+    return res.status(200).json(new Apiresponce(200, user, "User fetched successfully"));
+});
+
+
 export {
     getAllVideos,
     getAllUsersVideos,
@@ -339,5 +363,6 @@ export {
     getVideoById,
     updateVideo,
     deleteVideo,
-    togglePublishStatus
+    togglePublishStatus,
+    getUserByVideoId
 }

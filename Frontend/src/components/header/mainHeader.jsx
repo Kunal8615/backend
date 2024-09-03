@@ -8,6 +8,7 @@ const MainHeader = () => {
   const [profileImage, setProfileImage] = useState('');
   const [error, setError] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false); // New state for loading indicator
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,6 +33,8 @@ const MainHeader = () => {
 
   // Handle sign-out
   const handleSignOut = async () => {
+    setIsSigningOut(true); // Show loading indicator
+
     try {
       const response = await fetch(`${API_URL}/users/logout`, {
         method: 'POST',
@@ -40,10 +43,16 @@ const MainHeader = () => {
       if (!response.ok) {
         throw new Error('Failed to sign out');
       }
-      navigate('/login');
+
+      
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000); 
     } catch (error) {
       console.error('Error signing out:', error);
       setError('Error signing out');
+    } finally {
+      setIsSigningOut(false); 
     }
   };
 
@@ -56,13 +65,15 @@ const MainHeader = () => {
     <header className="shadow sticky z-50 top-0 bg-slate-800 border-b-4 border-red-500">
       <nav className="px-4 lg:px-6 py-2.5">
         <div className="flex flex-wrap items-center justify-between mx-auto max-w-screen-xl">
-          {/* Profile Image and Sign Out Button */}
+          
+          <p className='text-yellow-300 text-2xl font-bold hover:text-orange-500 '>TubeTweet 🪬</p>
           <div className="flex items-center lg:order-2">
             <button
               onClick={handleSignOut}
               className="text-white hover:text-orange-400 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5"
+              disabled={isSigningOut} 
             >
-              Signout
+              {isSigningOut ? 'Signing Out...' : 'Signout'}
             </button>
             {profileImage && (
               <div className="relative ml-4">
@@ -100,7 +111,7 @@ const MainHeader = () => {
 
           {/* Navigation Links */}
           <div
-            className={`lg:flex lg:w-auto lg:order-1 ${isMobileMenuOpen ? 'block' : 'hidden'}`}
+            className={`lg:flex font-bold lg:w-auto lg:order-1 ${isMobileMenuOpen ? 'block' : 'hidden'}`}
             id="mobile-menu-2"
           >
             <ul className="flex flex-col mt-4 lg:flex-row lg:space-x-8 lg:mt-0">
